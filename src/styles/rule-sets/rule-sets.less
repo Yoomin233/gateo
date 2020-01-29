@@ -1,0 +1,72 @@
+@import './common.less';
+@base-unit: 10px;
+
+
+.margins (@size) {
+  .mt-@{size} {
+    margin-top: @size*@base-unit;
+  }
+
+  .mr-@{size} {
+    margin-right: @size*@base-unit;
+  }
+
+  .mb-@{size} {
+    margin-bottom: @size*@base-unit;
+  }
+
+  .ml-@{size} {
+    margin-left: @size*@base-unit;
+  }
+
+}
+
+.paddings (@size) {
+  .pt-@{size} {
+    padding-top: @size*@base-unit;
+  }
+
+  .pr-@{size} {
+    padding-right: @size*@base-unit;
+  }
+
+  .pb-@{size} {
+    padding-bottom: @size*@base-unit;
+  }
+
+  .pl-@{size} {
+    padding-left: @size*@base-unit;
+  }
+
+  .pv-@{size} {
+    padding-top: @size*@base-unit;
+    padding-bottom: @size*@base-unit;
+  }
+
+  .ph-@{size} {
+    padding-left: @size*@base-unit;
+    padding-right: @size*@base-unit;
+  }
+}
+
+.loopWidth(@counter) when (@counter >= 0) {
+  .loopWidth((@counter - 1)); // next iteration
+  .margins(@counter);
+  .paddings(@counter);
+}
+
+
+.loopWidth(10);
+
+
+.fs-1 {
+  font-size: 1.6*@base-unit;
+}
+
+.fs-2 {
+  font-size: 3.2*@base-unit;
+}
+
+.fs-3 {
+  font-size: 4.8*@base-unit;
+}

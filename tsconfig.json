@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "outDir": "./output/",
+    "sourceMap": true,
+    "strictNullChecks": false,
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "lib": ["es2017", "dom", "es2015.promise"],
+    "baseUrl": "src",
+    "paths": {
+      "apis/*": ["apis/*"],
+      "components/*": ["components/*"],
+      "utils": ["utils"],
+      "App": ["App"]
+    }
+  },
+  "include": ["./src/**/*"],
+  "typeRoots": ["./src/@types", "./node_modules/@types"]
+}

@@ -1,0 +1,84 @@
+{
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "jsx": true,
+      "impliedStrict": true
+    }
+  },
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "node": true,
+    "commonjs": true,
+    "shared-node-browser": true,
+    "es6": true,
+    "worker": true,
+    "amd": true,
+    "mocha": true,
+    "jasmine": true,
+    "jest": true,
+    "phantomjs": true,
+    "protractor": true,
+    "qunit": true,
+    "jquery": true,
+    "prototypejs": true,
+    "shelljs": true,
+    "meteor": true,
+    "mongo": true,
+    "applescript": true,
+    "nashorn": true,
+    "serviceworker": true,
+    "atomtest": true,
+    "embertest": true,
+    "webextensions": true,
+    "greasemonkey": true
+  },
+  "plugins": ["react"],
+  "rules": {
+    "semi": 2,
+    "eqeqeq": ["error", "always"],
+    "curly": ["error", "all"],
+    "no-empty-function": "error",
+    "no-loop-func": "error",
+    "no-multi-spaces": [
+      "error",
+      {
+        "exceptions": {
+          "VariableDeclarator": true,
+          "ImportDeclaration": true
+        }
+      }
+    ],
+    "no-return-assign": ["error", "always"],
+    "no-useless-concat": "warn",
+    "no-useless-escape": "warn",
+    "no-with": "error",
+    "array-bracket-spacing": ["error", "never"],
+    "block-spacing": "error",
+    "comma-spacing": [
+      "error",
+      {
+        "before": false,
+        "after": true
+      }
+    ],
+    "comma-style": ["error", "last"],
+    "computed-property-spacing": ["error", "never"],
+    "key-spacing": "error",
+    "keyword-spacing": "error",
+    "linebreak-style": ["error", "unix"],
+    "no-multiple-empty-lines": "warn",
+    "no-tabs": "error",
+    "no-whitespace-before-property": "error",
+    "quote-props": ["error", "as-needed"],
+    "quotes": ["warn", "single"],
+    "space-before-blocks": "error",
+    "space-infix-ops": "error",
+    "space-unary-ops": "error",
+    "spaced-comment": "warn",
+    "no-console": ["warn"],
+    "react/prop-types": ["off"]
+  }
+}
