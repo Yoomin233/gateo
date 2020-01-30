@@ -2,43 +2,62 @@ import * as React from 'react';
 
 import DialogModal from 'components/src/modal/dialog';
 import Input from 'components/src/input';
-import { User } from 'types';
-import context from 'context';
 import { get_sign } from 'utils';
-import { login } from 'api';
+import {
+  login,
+  get_server_time,
+  user_info_storage,
+  subscribe_orders,
+  ws
+} from 'api';
+import { AppContext } from 'App';
 
-import keys from './keys';
+const storage_api_key = 'api_key';
+const storage_secret_key = 'secret_key';
 
-// import gate from './gate';
+let time: number;
 
 interface Props {
-  set_user: (arg0: User) => void;
-  show: boolean;
+  finish_login_cb: () => void;
 }
 
 const Login = (prop: Props) => {
-  const { set_user, show } = prop;
-  const [api_key, set_api_key] = React.useState(keys.api_key);
-  const [secret_key, set_secret_key] = React.useState(keys.secret_key);
+  const { finish_login_cb } = prop;
+  const [api_key, set_api_key] = React.useState(
+    localStorage.getItem(storage_api_key) || ''
+  );
+  const [secret_key, set_secret_key] = React.useState(
+    localStorage.getItem(storage_secret_key) || ''
+  );
 
-  const [connected, set_connected] = React.useState(false);
+  const [remeber, set_remeber] = React.useState(false);
 
-  const { ws } = React.useContext(context);
+  const [show, set_show] = React.useState(true);
 
-  const log = () => {
-    set_user({
-      api_key,
-      secret_key
-    });
-    const nonce = Date.now();
-    const signature = get_sign(secret_key, `${nonce}`);
-    const params = [api_key, signature, nonce];
-    login(ws, params);
+  const [status, set_status] = React.useState('Connecting...');
+
+  const log = async () => {
+    set_status('Logging...');
+    const res = await login(api_key, secret_key);
+    if (res.result.status === 'success') {
+      if (remeber) {
+        localStorage.setItem(storage_api_key, api_key);
+        localStorage.setItem(storage_secret_key, secret_key);
+      }
+      user_info_storage.api_key = api_key;
+      user_info_storage.secret_key = secret_key;
+      finish_login_cb();
+      set_show(false);
+    }
   };
 
   React.useEffect(() => {
-    ws.addEventListener('open', () => {
-      set_connected(true);
+    ws.addEventListener('open', async () => {
+      set_status('');
+
+      if (api_key && secret_key) log();
+    });
+    ws.addEventListener('close', () => {
       log();
     });
   }, []);
@@ -50,9 +69,9 @@ const Login = (prop: Props) => {
       noCancenBtn
       onOk={log}
       okBtnProps={{
-        disabled: !connected
+        disabled: !!status
       }}
-      okText={connected ? '' : 'Loading...'}
+      okText={status}
     >
       <p>
         API key:{' '}
@@ -67,6 +86,14 @@ const Login = (prop: Props) => {
           value={secret_key}
           onChange={e => set_secret_key(e.target.value)}
         ></Input>
+      </p>
+      <p>
+        <input
+          type='checkbox'
+          checked={remeber}
+          onChange={e => set_remeber(e.target.checked)}
+        ></input>
+        remember keys
       </p>
     </DialogModal>
   );

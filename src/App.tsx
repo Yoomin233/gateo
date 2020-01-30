@@ -1,48 +1,75 @@
 import * as React from 'react';
 import Login from './login';
-import { User, Balance } from 'types';
-import context from 'context';
-import { API_CODES, get_balance } from 'api';
+import { Balance } from 'types';
+import {
+  ws,
+  get_balance,
+  subscribe_tickers,
+  subscribe_balance,
+  subscribe_orders
+} from 'api';
 import { process_balance } from 'utils';
-import Ticker from './ticker';
 import UBLogo from 'components/src/ub-logo';
+import TickerManager, { TickerDetailedInfo } from './tickers/tickers_manager';
 
-const ws = new WebSocket('wss://ws.gate.io/v3/');
+export const AppContext = React.createContext<{
+  balance: { [key: string]: TickerDetailedInfo };
+  set_balance: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: TickerDetailedInfo;
+    }>
+  >;
+}>({
+  balance: {},
+  set_balance: () => {}
+});
 
 export default () => {
-  const [user, set_user] = React.useState<User>({
-    api_key: '',
-    secret_key: ''
-  });
-
-  const [balance, set_balance] = React.useState<Balance[]>([]);
+  const [balance, set_balance] = React.useState<{
+    [key: string]: TickerDetailedInfo;
+  }>({});
 
   const [fetching, set_fetching] = React.useState(true);
 
-  React.useEffect(() => {
-    ws.addEventListener('message', e => {
-      const data = JSON.parse(e.data);
-      if (data.id === API_CODES['server.sign']) {
-        get_balance(ws);
-      }
-      if (data.id === API_CODES['balance.query']) {
-        set_balance(process_balance(data.result));
-        set_fetching(false);
-      }
-    });
-  }, []);
+  const finish_login_cb = async () => {
+    const tickers = await update_balance();
+    set_fetching(false);
+    /**
+     * 订阅余额变化
+     */
+    subscribe_balance(update_balance);
+    /**
+     * 订阅订单变化
+     */
+    subscribe_orders();
+    /**
+     * 订阅价格变化
+     */
+    subscribe_tickers(Object.keys(tickers).map(t => `${t}_USDT`));
+  };
+
+  const update_balance = async () => {
+    const balance = await get_balance();
+    const tickers = process_balance(balance.result);
+    set_balance(tickers);
+    return tickers;
+  };
+
+  console.log('app render!');
 
   return (
-    <context.Provider
+    <AppContext.Provider
       value={{
-        ws
+        balance,
+        set_balance
       }}
     >
       {fetching ? <UBLogo size={50}></UBLogo> : null}
-      {balance.map(b => (
-        <Ticker ticker={b}></Ticker>
-      ))}
-      <Login show={!user.api_key} set_user={set_user}></Login>
-    </context.Provider>
+      {Object.keys(balance).length ? (
+        <TickerManager tickers={balance}></TickerManager>
+      ) : null}
+
+      <Login finish_login_cb={finish_login_cb}></Login>
+    </AppContext.Provider>
   );
 };

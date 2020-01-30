@@ -23,7 +23,7 @@
   "dependencies": {
     "@hot-loader/react-dom": "^16.8.6",
     "@types/crypto-js": "^3.1.43",
-    "axios": "^0.18.0",
+    "axios": "^0.19.2",
     "crypto-js": "^3.1.9-1",
     "express": "^4.17.1",
     "react": "16.8.6",
@@ -83,5 +83,11 @@
     "development": "/",
     "production": "/"
   },
-  "proxy": {}
+  "proxy": {
+    "/api2/**": {
+      "target": "https://api.gateio.life",
+      "secure": false,
+      "changeOrigin": true
+    }
+  }
 }
