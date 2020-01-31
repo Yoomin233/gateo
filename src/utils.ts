@@ -1,6 +1,3 @@
-import hmacSHA512 from 'crypto-js/hmac-sha512';
-import Base64 from 'crypto-js/enc-base64';
-
 import crypto from 'crypto';
 import { Balance, TickerInfo } from 'types';
 import { TickerDetailedInfo } from 'tickers/tickers_manager';

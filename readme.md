@@ -4,6 +4,8 @@ gateio.co alternative
 
 ## online demo
 
+see [this link](https://yueminhu.github.io/gateo/output)
+
 **Attention:** Due to gate.io server response limitations, all http-related requests(query historical orders, place orders) are only available in [local mode](#localmode)(see below)! Websockets are uneffected.
 
 ## screenshots
