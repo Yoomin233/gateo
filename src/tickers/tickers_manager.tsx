@@ -1,22 +1,20 @@
 import * as React from 'react';
 import { Balance, TickerInfo } from 'types';
 import Ticker from './ticker';
-import {
-  subscribe_ws,
-  subscribe_tickers,
-  subscribe_orders,
-  query_ticker
-} from 'api';
-import { to_percent } from 'utils';
+import { subscribe_ws, query_ticker } from 'api';
+import { to_percent, set_balance_info } from 'utils';
 import { AppContext } from 'App';
 
 interface Props {
-  tickers: { [key: string]: Balance };
+  tickers: Balance;
 }
 
 let sorter_desc = true;
 
-export type TickerDetailedInfo = Balance & {
+export type TickerDetailedInfo = {
+  available: number;
+  freeze: number;
+  ticker: string;
   price: number;
   usdt_amount: number;
   change: number;
@@ -27,7 +25,9 @@ const TickerManager = (prop: Props) => {
 
   const { balance, set_balance } = React.useContext(AppContext);
 
-  const [sorter, set_sorter] = React.useState(() => (a, b) => 1);
+  const [sorter, set_sorter] = React.useState(() => (a, b) =>
+    b.usdt_amount - a.usdt_amount
+  );
 
   const toggle_sorter = (key: string) => {
     set_sorter(() => {
@@ -45,31 +45,37 @@ const TickerManager = (prop: Props) => {
     });
   };
 
+  const tickers_arr = Object.entries(balance)
+    .filter(([t]) => t !== 'USDT')
+    .map(([ticker, value]) => ({
+      ...value,
+      ticker
+    }))
+    .sort(sorter);
+
   React.useEffect(() => {
     /**
      * 获取最初价格信息
      */
     setTimeout(() => {
-      for (let i in balance) {
-        query_ticker(`${i}_USDT`)
+      tickers_arr.forEach(ticker => {
+        query_ticker(`${ticker.ticker}_USDT`)
           .then(data => {
             set_balance(t => {
-              const current = t[i];
-              t[i] = {
-                ...current,
-                price: Number(data.result.last),
-                usdt_amount:
-                  (current.freeze + current.available) *
-                  Number(data.result.last),
-                change: Number(data.result.change)
-              };
+              t[ticker.ticker] = set_balance_info(
+                t[ticker.ticker],
+                data.result
+              );
               return { ...t };
             });
           })
           .catch(e => {
             console.log(e);
           });
-      }
+      });
+      // for (let i in balance) {
+
+      // }
     }, 500);
 
     /**
@@ -85,27 +91,13 @@ const TickerManager = (prop: Props) => {
           const incoming_name = data.params[0];
           for (let i in tickers) {
             if (`${i}_USDT` !== incoming_name) continue;
-            const current = tickers[i];
-            tickers[i] = {
-              ...current,
-              price: Number(data.params[1].last),
-              usdt_amount: (current.freeze + current.available) * current.price,
-              change: Number(data.params[1].change)
-            };
+            tickers[i] = set_balance_info(tickers[i], data.params[1]);
           }
           return { ...tickers };
         });
       }
     });
   }, []);
-
-  const tickers_arr = Object.entries(balance)
-    .filter(([t]) => t !== 'USDT')
-    .map(([ticker, value]) => ({
-      ...value,
-      ticker
-    }))
-    .sort(sorter);
 
   const usdt_assets = tickers['USDT']
     ? tickers['USDT'].available + tickers['USDT'].freeze
@@ -126,6 +118,7 @@ const TickerManager = (prop: Props) => {
         <span onClick={() => toggle_sorter('price')}>Current Price</span>
         <span onClick={() => toggle_sorter('change')}>24H Change</span>
         <span onClick={() => toggle_sorter('usdt_amount')}>Sum(USDT)</span>
+        <span>Action</span>
       </p>
       {tickers_arr.map((b, _idx) => (
         <Ticker key={b.ticker} ticker={balance[b.ticker]} idx={_idx}></Ticker>
@@ -133,9 +126,9 @@ const TickerManager = (prop: Props) => {
       <p className='flexSpread ticker-header'>
         <span>Total Assets</span>
         <span>
-          (crypto {to_percent(crypto_assets / total_assets)}
-          %, usdt {to_percent(usdt_assets / total_assets)}%)
-          {total_assets.toFixed(2)} USDT
+          (crypto {to_percent(crypto_assets / total_assets)}, usdt{' '}
+          {to_percent(usdt_assets / total_assets)}){total_assets.toFixed(2)}{' '}
+          USDT
         </span>
       </p>
     </div>

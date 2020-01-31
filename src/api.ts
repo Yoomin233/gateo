@@ -3,17 +3,23 @@ var crypto = require('crypto');
 
 import Axios from 'axios';
 
-import { Balance, TickerInfo, OrderQueryResp, PendingOrderInfo, FinishedOrderInfo } from 'types';
+import { Balance, TickerInfo, OrderQueryResp, FinishedOrderInfo } from 'types';
 import { get_sign } from 'utils';
+import Toast from 'components/src/Toast';
 
-export const ws = new WebSocket('wss://ws.gate.io/v3/');
-
+export let ws;
 const ws_subscribers: ((data: any) => void)[] = [];
 
-ws.addEventListener('message', e => {
-  const data = JSON.parse(e.data);
-  ws_subscribers.forEach(cb => cb(data));
-});
+export const connect_ws = () => {
+  ws = new WebSocket('wss://ws.gate.io/v3/');
+  ws.addEventListener('message', e => {
+    const data = JSON.parse(e.data);
+    ws_subscribers.forEach(cb => cb(data));
+  });
+  return ws;
+};
+
+connect_ws();
 
 export const subscribe_ws = <T>(cb: (data: T & { method: string }) => void) => {
   ws_subscribers.push(cb);
@@ -38,6 +44,7 @@ const ws_promisify = <T>(
   error?: any;
   id: number;
 } & T> => {
+  // console.log(ws, method);
   return new Promise((res, rej) => {
     const call_sign = call_idx++;
     ws.send(
@@ -110,10 +117,16 @@ function get_http_sign(str: string, secret: string) {
     .toString();
 }
 
+const is_localhost = location.hostname === 'localhost';
+
 const http_factory = <T>(
   url: string,
   params: { [key: string]: any } = {}
 ): Promise<HttpResp & T> => {
+  if (!is_localhost) {
+    Toast.show('http methods is only available when running on localhost!');
+    return Promise.reject();
+  }
   const data = querystring.stringify(params);
   const SIGN = get_http_sign(data, user_info_storage.secret_key);
   return Axios.post(url, data, {
@@ -122,7 +135,9 @@ const http_factory = <T>(
       KEY: user_info_storage.api_key,
       SIGN
     }
-  }).then(resp => resp.data);
+  })
+    .then(resp => resp.data)
+    .catch(e => Toast.show(e.message));
 };
 
 export const http_cancel_order = (orderNumber: string, currencyPair: string) =>
@@ -145,3 +160,17 @@ interface HttpResp {
   message: string;
   code: number;
 }
+
+export const http_buy = (currencyPair: string, rate: string, amount: string) =>
+  http_factory('/api2/1/private/buy', {
+    currencyPair,
+    rate,
+    amount
+  });
+
+export const http_sell = (currencyPair: string, rate: string, amount: string) =>
+  http_factory('/api2/1/private/sell', {
+    currencyPair,
+    rate,
+    amount
+  });

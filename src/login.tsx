@@ -8,21 +8,23 @@ import {
   get_server_time,
   user_info_storage,
   subscribe_orders,
-  ws
+  ws,
+  connect_ws
 } from 'api';
 import { AppContext } from 'App';
 
 const storage_api_key = 'api_key';
 const storage_secret_key = 'secret_key';
 
-let time: number;
-
 interface Props {
-  finish_login_cb: () => void;
+  finish_login_cb: (visitor?: boolean) => void;
 }
 
 const Login = (prop: Props) => {
   const { finish_login_cb } = prop;
+
+  const { set_is_visitor } = React.useContext(AppContext);
+
   const [api_key, set_api_key] = React.useState(
     localStorage.getItem(storage_api_key) || ''
   );
@@ -30,7 +32,7 @@ const Login = (prop: Props) => {
     localStorage.getItem(storage_secret_key) || ''
   );
 
-  const [remeber, set_remeber] = React.useState(false);
+  const [remeber, set_remeber] = React.useState(true);
 
   const [show, set_show] = React.useState(true);
 
@@ -43,11 +45,15 @@ const Login = (prop: Props) => {
       if (remeber) {
         localStorage.setItem(storage_api_key, api_key);
         localStorage.setItem(storage_secret_key, secret_key);
+      } else {
+        localStorage.removeItem(storage_api_key);
+        localStorage.removeItem(storage_secret_key);
       }
       user_info_storage.api_key = api_key;
       user_info_storage.secret_key = secret_key;
       finish_login_cb();
       set_show(false);
+      set_status('');
     }
   };
 
@@ -55,47 +61,65 @@ const Login = (prop: Props) => {
     ws.addEventListener('open', async () => {
       set_status('');
 
-      if (api_key && secret_key) log();
+      // if (api_key && secret_key) log();
     });
-    ws.addEventListener('close', () => {
-      log();
+    ws.addEventListener('close', function() {
+      // console.log('ws disconnect!');
+      set_status('Disconnected');
+      connect_ws().addEventListener('open', log);
     });
   }, []);
 
   return (
-    <DialogModal
-      show={show}
-      dismiss={() => {}}
-      noCancenBtn
-      onOk={log}
-      okBtnProps={{
-        disabled: !!status
-      }}
-      okText={status}
-    >
-      <p>
-        API key:{' '}
-        <Input
-          value={api_key}
-          onChange={e => set_api_key(e.target.value)}
-        ></Input>
-      </p>
-      <p>
-        API Secret:{' '}
-        <Input
-          value={secret_key}
-          onChange={e => set_secret_key(e.target.value)}
-        ></Input>
-      </p>
-      <p>
-        <input
-          type='checkbox'
-          checked={remeber}
-          onChange={e => set_remeber(e.target.checked)}
-        ></input>
-        remember keys
-      </p>
-    </DialogModal>
+    <>
+      <div className='ws-indicator'>
+        <span onClick={connect_ws}>Status: {status || 'online'}</span>
+      </div>
+      <DialogModal
+        show={show}
+        dismiss={() => {}}
+        onOk={log}
+        okBtnProps={{
+          disabled: !!status
+        }}
+        cancelBtnProps={{
+          disabled: !!status
+        }}
+        okText={status || '登录'}
+        cancelText={'游客登录'}
+        onCancel={() => {
+          set_is_visitor(true);
+          set_show(false);
+          finish_login_cb(true);
+        }}
+      >
+        <p className='f-b tac'>Login</p>
+        <p>
+          API key:{' '}
+          <Input
+            type='password'
+            value={api_key}
+            onChange={e => set_api_key(e.target.value)}
+          ></Input>
+        </p>
+        <p>
+          API Secret:{' '}
+          <Input
+            type='password'
+            value={secret_key}
+            onChange={e => set_secret_key(e.target.value)}
+          ></Input>
+        </p>
+        <p>
+          <input
+            type='checkbox'
+            checked={remeber}
+            onChange={e => set_remeber(e.target.checked)}
+          ></input>
+          remember keys
+        </p>
+      </DialogModal>
+    </>
   );
 };
 

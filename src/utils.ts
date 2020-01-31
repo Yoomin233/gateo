@@ -2,7 +2,7 @@ import hmacSHA512 from 'crypto-js/hmac-sha512';
 import Base64 from 'crypto-js/enc-base64';
 
 import crypto from 'crypto';
-import { Balance } from 'types';
+import { Balance, TickerInfo } from 'types';
 import { TickerDetailedInfo } from 'tickers/tickers_manager';
 
 export const get_sign = (secret_key: string, message: string) => {
@@ -14,7 +14,10 @@ export const get_sign = (secret_key: string, message: string) => {
   // h = hmac.new(secret_key, message, hashlib.sha512)
 };
 
-export const process_balance = (balance: { [key: string]: Balance }) => {
+export const aggregate_balance = (
+  balance: { [key: string]: Balance },
+  old_balance: { [key: string]: TickerDetailedInfo }
+) => {
   let res: { [key: string]: TickerDetailedInfo } = {};
   for (let i in balance) {
     const current = balance[i];
@@ -25,9 +28,9 @@ export const process_balance = (balance: { [key: string]: Balance }) => {
         freeze: number_freeze,
         available: number_available,
         ticker: i,
-        price: 0,
-        usdt_amount: 0,
-        change: 0
+        price: old_balance[i] ? old_balance[i].price : 0,
+        usdt_amount: old_balance[i] ? old_balance[i].usdt_amount : 0,
+        change: old_balance[i] ? old_balance[i].change : 0
       };
     }
   }
@@ -35,4 +38,23 @@ export const process_balance = (balance: { [key: string]: Balance }) => {
 };
 
 export const to_percent = (num, frac = 2) =>
-  isNaN(num) ? '-' : (num * 100).toFixed(frac);
+  isNaN(num) ? '-' : (num * 100).toFixed(frac) + '%';
+
+export const get_ticker = (str: string) => str.split('_')[0];
+
+export const set_balance_info = (
+  ticker: TickerDetailedInfo,
+  new_info: TickerInfo
+): TickerDetailedInfo => {
+  return {
+    ...ticker,
+    price: Number(new_info.last),
+    usdt_amount: (ticker.freeze + ticker.available) * Number(new_info.last),
+    change: Number(new_info.change)
+  };
+};
+
+
+export const get_ticker_balance = (balance: Balance, ticker: string, key: 'available' | 'freeze' | 'price') => {
+  return balance[ticker] ? balance[ticker][key] || 0 : 0
+}

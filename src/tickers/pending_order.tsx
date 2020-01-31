@@ -2,6 +2,9 @@ import * as React from 'react';
 import { PendingOrderInfo } from 'types';
 import Button from 'components/src/button';
 import { http_cancel_order } from 'api';
+import { AppContext } from 'App';
+import { get_ticker, to_percent } from 'utils';
+import Toast from 'components/src/Toast';
 
 interface Props {
   order: PendingOrderInfo;
@@ -9,18 +12,34 @@ interface Props {
 
 const PendingOrder = (prop: Props) => {
   const { order } = prop;
+  const { balance } = React.useContext(AppContext);
+
   const [loading, set_loading] = React.useState(false);
   const cancel = async () => {
     set_loading(true);
-    http_cancel_order(String(order.id), order.market);
-    // const resp = await http_get_balance();
+    http_cancel_order(String(order.id), order.market).then(r => {
+      if (r.message === 'Success') {
+        Toast.show(r.message);
+      }
+    });
   };
-  const bg_classname = order.type === 1 ? 'bg_red' : 'bg_green'
+  const bg_classname = order.type === 1 ? 'bg_red' : 'bg_green';
+  const current_price = balance[get_ticker(order.market)].price;
+  const diff = Number(order.price) - current_price;
+
   return (
     <p onClick={e => e.stopPropagation()} className={bg_classname}>
-      <span className='f-b'>{order.price}</span>
+      <span className='f-b'>
+        {order.price}
+        <br></br>
+        <span>
+          {diff > 0 ? '+' : ''}
+          {diff.toFixed(2)}({diff > 0 ? '+' : ''}
+          {to_percent(diff / current_price)})
+        </span>
+      </span>
       <span>{order.amount}</span>
-  <span>{(Number(order.price) * Number(order.amount)).toFixed(2)}</span>
+      <span>{(Number(order.price) * Number(order.amount)).toFixed(2)}</span>
       <span>{order.type === 1 ? 'Sell' : 'Buy'}</span>
       <span>
         <Button onClick={cancel} loading={loading}>
