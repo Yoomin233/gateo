@@ -139,7 +139,7 @@ const http_factory = <T>(
   url: string,
   params: { [key: string]: any } = {}
 ): Promise<HttpResp & T> => {
-  if (!is_localhost) {
+  if (!is_localhost && get_mem_store('use_http_proxy')) {
     Toast.show('http methods is only available when running on localhost!');
     return Promise.reject();
   }
