@@ -52,12 +52,7 @@ export default () => {
   };
 
   const update_balance = async () => {
-    const data =
-      get_mem_store('is_visitor') === true
-        ? JSON.parse(
-            '{"result":{"ETH":{"available":"0.917447800918","freeze":"0.8421"},"USDT":{"available":"509.47266927493","freeze":"2712.86"},"EOS":{"available":"83.756019437376","freeze":"29.5"},"BTC":{"available":"0.05380057","freeze":"0.0538"}, "BCHSV":{"available":"10","freeze":"5"},"BCH":{"available":"10","freeze":"5"},"ETC":{"available":"10","freeze":"5"},"LTC":{"available":"10","freeze":"5"},"ZEC":{"available":"10","freeze":"5"},"ONT":{"available":"10","freeze":"5"},"LAMB":{"available":"10","freeze":"5"},"BEAM":{"available":"10","freeze":"5"},"SERO":{"available":"10","freeze":"5"},"XRP":{"available":"10","freeze":"5"},"HT":{"available":"10","freeze":"5"}}}'
-          )
-        : await get_balance();
+    const data = await get_balance();
     set_balance(old_balance => aggregate_balance(data.result, old_balance));
     return data.result;
   };

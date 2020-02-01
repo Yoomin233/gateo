@@ -7,6 +7,11 @@ import { Balance, TickerInfo, OrderQueryResp, FinishedOrderInfo } from 'types';
 import { get_sign } from 'utils';
 import Toast from 'components/src/Toast';
 import { set_mem_store, get_mem_store } from '../mem_store';
+import {
+  fake_balance,
+  fake_pending_order,
+  fake_finished_order
+} from './fake_data';
 
 // export let ws: WebSocket;
 const ws_subscribers: ((data: any) => void)[] = [];
@@ -83,8 +88,13 @@ export const login = async (api_key: string, secret_key: string) => {
   ]);
 };
 
+const promisify_datafeed = <T>(data, timeout = 500): Promise<T> =>
+  new Promise(res => setTimeout(res, timeout, data));
+
 export const get_balance = () =>
-  ws_promisify<{ result: { [key: string]: Balance } }>('balance.query');
+  get_mem_store('is_visitor')
+    ? promisify_datafeed(JSON.parse(fake_balance))
+    : ws_promisify<{ result: { [key: string]: Balance } }>('balance.query');
 
 export const subscribe_balance = cb => {
   ws_promisify('balance.subscribe');
@@ -105,11 +115,13 @@ export const query_ticker = (ticker: string) =>
   ws_promisify<{ result: TickerInfo }>('ticker.query', [ticker, 86400]);
 
 export const query_orders = (market: string, offset = 0, limit = 50) =>
-  ws_promisify<{ result: OrderQueryResp }>('order.query', [
-    market,
-    offset,
-    limit
-  ]);
+  get_mem_store('is_visitor')
+    ? promisify_datafeed(JSON.parse(fake_pending_order))
+    : ws_promisify<{ result: OrderQueryResp }>('order.query', [
+        market,
+        offset,
+        limit
+      ]);
 
 function get_http_sign(str: string, secret: string) {
   let unescapeStr = unescape(str);
@@ -155,13 +167,19 @@ export const http_cancel_order = (orderNumber: string, currencyPair: string) =>
   });
 
 export const http_get_finished_orders = (currencyPair: string) =>
-  http_factory<{
-    trades: FinishedOrderInfo[];
-  }>('/api2/1/private/tradeHistory', {
-    currencyPair,
-    offset: 0,
-    limit: 50
-  });
+  get_mem_store('is_visitor')
+    ? promisify_datafeed<
+        HttpResp & {
+          trades: FinishedOrderInfo[];
+        }
+      >(JSON.parse(fake_finished_order))
+    : http_factory<{
+        trades: FinishedOrderInfo[];
+      }>('/api2/1/private/tradeHistory', {
+        currencyPair,
+        offset: 0,
+        limit: 50
+      });
 
 interface HttpResp {
   result: string;

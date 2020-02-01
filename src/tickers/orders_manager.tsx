@@ -32,7 +32,6 @@ const OrdersManager = (prop: Props) => {
   );
 
   const get_pending_orders = async () => {
-    if (is_visitor) return set_pending_orders_fetched(true);
     const orders = await query_orders(ticker_full_name);
     set_pending_orders(orders.result.records);
     set_pending_orders_fetched(true);
@@ -44,7 +43,7 @@ const OrdersManager = (prop: Props) => {
 
   const get_finished_orders = async () => {
     set_finished_orders_fetched(false);
-    if (is_visitor) return set_finished_orders_fetched(true);
+    // if (is_visitor) return set_finished_orders_fetched(true);
     const orders = await http_get_finished_orders(ticker_full_name);
     if (orders.code === 0) set_finished_orders(orders.trades);
     set_finished_orders_fetched(true);
