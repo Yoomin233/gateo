@@ -83,6 +83,8 @@ const Login = (prop: Props) => {
     });
   }, []);
 
+  const btn_disabled = !!status || is_visitor ? false : !api_key || !secret_key;
+
   return (
     <>
       <div className='ws-indicator'>
@@ -93,7 +95,7 @@ const Login = (prop: Props) => {
         dismiss={() => {}}
         onOk={log}
         okBtnProps={{
-          disabled: !!status || !api_key || !secret_key
+          disabled: btn_disabled
         }}
         okText={status || `${is_visitor ? '游客' : ''}登录`}
         className='login-modal'
