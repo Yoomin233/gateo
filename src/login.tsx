@@ -8,10 +8,9 @@ import {
   get_server_time,
   user_info_storage,
   subscribe_orders,
-  ws,
   connect_ws
 } from 'api';
-import { AppContext } from 'App';
+import { set_mem_store, get_mem_store } from './mem_store';
 
 const storage_api_key = 'api_key';
 const storage_secret_key = 'secret_key';
@@ -23,7 +22,7 @@ interface Props {
 const Login = (prop: Props) => {
   const { finish_login_cb } = prop;
 
-  const { set_is_visitor } = React.useContext(AppContext);
+  // const { set_is_visitor } = React.useContext(AppContext);
 
   const [api_key, set_api_key] = React.useState(
     localStorage.getItem(storage_api_key) || ''
@@ -58,13 +57,13 @@ const Login = (prop: Props) => {
   };
 
   React.useEffect(() => {
-    ws.addEventListener('open', async () => {
+    get_mem_store('ws').addEventListener('open', async () => {
       set_status('');
 
       // if (api_key && secret_key) log();
     });
-    ws.addEventListener('close', function() {
-      // console.log('ws disconnect!');
+    get_mem_store('ws').addEventListener('close', function() {
+      console.log('ws disconnect!');
       set_status('Disconnected');
       connect_ws().addEventListener('open', log);
     });
@@ -88,7 +87,8 @@ const Login = (prop: Props) => {
         okText={status || '登录'}
         cancelText={'游客登录'}
         onCancel={() => {
-          set_is_visitor(true);
+          set_mem_store('is_visitor', true);
+          // set_is_visitor(true);
           set_show(false);
           finish_login_cb(true);
         }}

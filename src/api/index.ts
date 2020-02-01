@@ -6,18 +6,21 @@ import Axios from 'axios';
 import { Balance, TickerInfo, OrderQueryResp, FinishedOrderInfo } from 'types';
 import { get_sign } from 'utils';
 import Toast from 'components/src/Toast';
+import { set_mem_store, get_mem_store } from '../mem_store';
 
-export let ws;
+// export let ws: WebSocket;
 const ws_subscribers: ((data: any) => void)[] = [];
 
 export const connect_ws = () => {
-  ws = new WebSocket('wss://ws.gate.io/v3/');
+  const ws = set_mem_store('ws', new WebSocket('wss://ws.gate.io/v3/'));
   ws.addEventListener('message', e => {
     const data = JSON.parse(e.data);
     ws_subscribers.forEach(cb => cb(data));
   });
   return ws;
 };
+
+// export const get_ws_instance = () => ws;
 
 connect_ws();
 
@@ -47,7 +50,7 @@ const ws_promisify = <T>(
   // console.log(ws, method);
   return new Promise((res, rej) => {
     const call_sign = call_idx++;
-    ws.send(
+    get_mem_store('ws').send(
       JSON.stringify({
         id: call_sign,
         method: method,
@@ -136,7 +139,12 @@ const http_factory = <T>(
       SIGN
     }
   })
-    .then(resp => resp.data)
+    .then(resp => {
+      if (resp.data.code !== 0) {
+        Toast.show(resp.data.message);
+      }
+      return resp.data;
+    })
     .catch(e => Toast.show(e.message));
 };
 

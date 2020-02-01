@@ -6,6 +6,7 @@ import { TickerDetailedInfo } from './tickers_manager';
 import { query_orders, subscribe_ws, http_get_finished_orders } from 'api';
 import { AppContext } from 'App';
 import UBLogo from 'components/src/ub-logo';
+import { get_mem_store } from '../mem_store';
 
 interface Props {
   ticker: TickerDetailedInfo;
@@ -15,7 +16,7 @@ interface Props {
 const OrdersManager = (prop: Props) => {
   const { ticker, expand } = prop;
 
-  const { is_visitor } = React.useContext(AppContext);
+  const is_visitor = get_mem_store('is_visitor');
 
   const [pending_orders, set_pending_orders] = React.useState<
     PendingOrderInfo[]

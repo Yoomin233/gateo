@@ -5,6 +5,7 @@ import DialogModal from 'components/src/modal/dialog';
 import { http_buy, http_sell } from 'api';
 import Toast from 'components/src/Toast';
 import { AppContext } from 'App';
+import { set_mem_store, get_mem_store } from '../mem_store';
 
 interface Props {
   ticker_price: number;
@@ -16,7 +17,7 @@ interface Props {
 const TradePanel = (prop: Props) => {
   const { available, ticker, buy, ticker_price } = prop;
 
-  const { is_visitor } = React.useContext(AppContext);
+  const is_visitor = get_mem_store('is_visitor');
 
   const [price, set_price] = React.useState(0);
   const [amount, set_amount] = React.useState(0);
