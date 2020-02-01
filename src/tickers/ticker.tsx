@@ -9,6 +9,7 @@ import { TickerDetailedInfo } from './tickers_manager';
 import Number from './number';
 import OrdersManager from './orders_manager';
 import TradeManager from './trade_manager';
+import Button from 'components/src/button';
 
 interface Props {
   ticker: TickerDetailedInfo;
@@ -40,28 +41,31 @@ const Ticker = (prop: Props) => {
   return (
     <div className={`ticker-wrapper ${rise}`}>
       <p>
-        <span>{ticker.ticker}/USDT</span>
+        <span>
+          {ticker.ticker}
+          <span>/USDT</span>
+        </span>
         <span>{ticker.available.toFixed(4)}</span>
         <span>{ticker.freeze.toFixed(4)}</span>
-        <span className='f-b'>{ticker.price} USDT</span>
+        <span className='f-b'>{ticker.price}</span>
         <Number num={ticker.change}>%</Number>
         <span>{ticker.usdt_amount.toFixed(2)}</span>
         <span className='cp f-b'>
-          <span
+          <Button
             onClick={e => {
               set_expand_trade(!expand_trade);
             }}
           >
             Trade {expand_trade ? '↓' : '>'}
-          </span>
+          </Button>
           <br></br>
-          <span
+          <Button
             onClick={e => {
               set_expand_order(!expand_order);
             }}
           >
             Order {expand_order ? '↓' : '>'}
-          </span>
+          </Button>
         </span>
       </p>
       <TradeManager ticker={ticker} expand={expand_trade}></TradeManager>

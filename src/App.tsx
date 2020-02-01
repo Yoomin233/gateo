@@ -2,7 +2,6 @@ import * as React from 'react';
 import Login from './login';
 import { Balance } from 'types';
 import {
-  ws,
   get_balance,
   subscribe_tickers,
   subscribe_balance,
@@ -14,7 +13,7 @@ import TickerManager, { TickerDetailedInfo } from './tickers/tickers_manager';
 import { get_mem_store } from './mem_store';
 
 export const AppContext = React.createContext<{
-  balance: { [key: string]: TickerDetailedInfo };
+  balance: Balance;
   set_balance: React.Dispatch<React.SetStateAction<Balance>>;
   // is_visitor: boolean;
   // set_is_visitor: React.Dispatch<React.SetStateAction<boolean>>;
@@ -62,8 +61,6 @@ export default () => {
       value={{
         balance,
         set_balance
-        // is_visitor,
-        // set_is_visitor
       }}
     >
       {fetching ? (

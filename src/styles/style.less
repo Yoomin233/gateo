@@ -51,14 +51,24 @@ p {
     text-align: right;
     margin: 0 auto;
     padding: 0.2em 1em;
+    .ub-button {
+      padding: 0.2em;
+    }
 
 
     >span {
       width: 20%;
 
+
+
       &:first-child {
         text-align: left;
         width: 10%;
+
+        >span {
+          font-size: 70%;
+          vertical-align: bottom;
+        }
       }
     }
   }
@@ -87,6 +97,7 @@ p {
 .ticker-header {
   background: #f5cdaa;
   font-weight: bold;
+  z-index: 2;
 
   &:last-child {
     position: sticky;
@@ -103,6 +114,7 @@ p {
 .table {
   >p:first-child {
     font-weight: bold;
+    background: floralwhite;
   }
 
   >p.tac {
@@ -152,22 +164,25 @@ p {
   border-top: 1px solid #f5cdaa;
   background: floralwhite;
 
-  >div:first-child {
+  >div {
     width: 50%;
-
   }
 
+
   >div:nth-child(2) {
-    width: 50%;
     border-left: 1px solid #f5cdaa;
   }
 
   .table {
     position: relative;
     max-height: 50vh;
-    overflow: scroll;
+    overflow: hidden;
     // padding-left: 2em;
     font-size: 0.8em;
+
+    &:focus {
+      overflow: scroll;
+    }
 
     >p {
       padding: 0.3em 1em;
@@ -176,7 +191,7 @@ p {
     >p:first-child {
       position: sticky;
       top: 0;
-      background: inherit;
+      // background: inherit;
     }
   }
 
@@ -202,6 +217,7 @@ p {
     width: 100%;
     height: 2.2em;
     color: floralwhite;
+    font-size: 1.2em;
 
     &.bg_red {
       background: #ff7171;
@@ -272,16 +288,36 @@ input {
   padding: 0.5em;
   background: whitesmoke;
   border-radius: 0.2em;
+  z-index: 3;
 }
 
 div.login-modal {
-  width: 500px;
+  max-width: 500px;
   padding: 1em 2em;
 
   >p {
     margin-bottom: 0.5em;
   }
+
   .ub-dialog-footer {
     justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 540px) {
+  body {
+    font-size: 12px;
+  }
+
+  .ticker-details {
+    flex-wrap: wrap;
+
+    >div {
+      width: 100%;
+    }
+
+    .table {
+      max-height: 40vw;
+    }
   }
 }

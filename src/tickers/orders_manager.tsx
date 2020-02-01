@@ -92,7 +92,7 @@ const OrdersManager = (prop: Props) => {
               Refresh
             </span>
           </p>
-          <div className='table'>
+          <div className='table' tabIndex={-1}>
             <p>
               <span>Price</span>
               <span>Amount</span>
@@ -118,7 +118,7 @@ const OrdersManager = (prop: Props) => {
         </div>
         <div>
           <p className='tac f-b framed'>Pending Orders</p>
-          <div className='table'>
+          <div className='table' tabIndex={-1}>
             <p>
               <span>Price</span>
               <span>Amount</span>

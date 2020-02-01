@@ -21,6 +21,7 @@ const PendingOrder = (prop: Props) => {
       if (r.message === 'Success') {
         Toast.show(r.message);
       }
+      set_loading(false);
     });
   };
   const bg_classname = order.type === 1 ? 'bg_red' : 'bg_green';

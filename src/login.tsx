@@ -2,14 +2,7 @@ import * as React from 'react';
 
 import DialogModal from 'components/src/modal/dialog';
 import Input from 'components/src/input';
-import { get_sign } from 'utils';
-import {
-  login,
-  get_server_time,
-  user_info_storage,
-  subscribe_orders,
-  connect_ws
-} from 'api';
+import { login, user_info_storage, connect_ws } from 'api';
 import { set_mem_store, get_mem_store } from './mem_store';
 import Tip from 'components/src/tip';
 
@@ -22,8 +15,6 @@ interface Props {
 
 const Login = (prop: Props) => {
   const { finish_login_cb } = prop;
-
-  // const { set_is_visitor } = React.useContext(AppContext);
 
   const [api_key, set_api_key] = React.useState(
     localStorage.getItem(storage_api_key) || ''
@@ -46,6 +37,9 @@ const Login = (prop: Props) => {
       set_show(false);
       finish_login_cb(true);
       return;
+    }
+    if (set_use_http_proxy) {
+      set_mem_store('use_http_proxy', true);
     }
     set_status('Logging...');
     const res = await login(api_key, secret_key);
@@ -83,7 +77,10 @@ const Login = (prop: Props) => {
     });
   }, []);
 
-  const btn_disabled = !!status || is_visitor ? false : !api_key || !secret_key;
+  const btn_disabled =
+    !!status || (is_visitor ? false : !api_key || !secret_key);
+
+  console.log(btn_disabled);
 
   return (
     <>
@@ -148,9 +145,10 @@ const Login = (prop: Props) => {
             <label htmlFor='use_http_proxy'>
               Use Http Proxy
               <Tip trigger='hover'>
-                When checked, http requests will be send to a proxy server to
-                circumvent the CORS issue. If you are concerned about this,
-                please do not check, but http-requests will be unavailable.
+                When checked, http requests will be send to a proxy server(www.yoomin.me) to
+                circumvent the CORS limitation imposed by gate.io server. If you
+                are concerned about sending credentials to my server, please do not check, but http-related requests
+                will be unavailable.
               </Tip>
             </label>
           </p>
