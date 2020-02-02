@@ -10,28 +10,22 @@ import {
 import { aggregate_balance } from 'utils';
 import UBLogo from 'components/src/ub-logo';
 import TickerManager, { TickerDetailedInfo } from './tickers/tickers_manager';
-import { get_mem_store } from './mem_store';
+import { get_mem_store, set_mem_store } from './mem_store';
 
 export const AppContext = React.createContext<{
   balance: Balance;
   set_balance: React.Dispatch<React.SetStateAction<Balance>>;
-  // is_visitor: boolean;
-  // set_is_visitor: React.Dispatch<React.SetStateAction<boolean>>;
 }>({
   balance: {},
   set_balance: () => {}
-  // is_visitor: false,
-  // set_is_visitor: () => {}
 });
 
 export default () => {
   const [balance, set_balance] = React.useState<Balance>({});
-  // const [is_visitor, set_is_visitor] = React.useState(false);
 
   const [fetching, set_fetching] = React.useState(true);
 
   const finish_login_cb = async () => {
-    // console.log(is_visitor);
     const tickers = await update_balance();
     set_fetching(false);
     if (!get_mem_store('is_visitor')) {
@@ -49,6 +43,15 @@ export default () => {
      */
     subscribe_tickers(Object.keys(tickers).map(t => `${t}_USDT`));
   };
+
+  React.useEffect(() => {
+    if (!window.Notification) return;
+    Notification.requestPermission().then(res => {
+      if (res !== 'denied') {
+        set_mem_store('allow_notification', true);
+      }
+    });
+  }, []);
 
   const update_balance = async () => {
     const data = await get_balance();

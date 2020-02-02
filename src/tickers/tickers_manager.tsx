@@ -46,7 +46,7 @@ const TickerManager = (prop: Props) => {
   };
 
   const tickers_arr = Object.entries(balance)
-    .filter(([t]) => t !== 'USDT')
+    .filter(([ticker, info]) => ticker !== 'USDT' && info.price !== 0)
     .map(([ticker, value]) => ({
       ...value,
       ticker
@@ -113,10 +113,11 @@ const TickerManager = (prop: Props) => {
     <div className='table ticker-list'>
       <p className='flexSpread ticker-header'>
         <span onClick={() => toggle_sorter('ticker')}>Token</span>
-        <span>Available</span>
-        <span>Freeze</span>
-        <span onClick={() => toggle_sorter('price')}>Price</span>
-        <span onClick={() => toggle_sorter('change')}>24H Change</span>
+        {/* <span>Available</span> */}
+        {/* <span>Freeze</span> */}
+        <span onClick={() => toggle_sorter('price')}>
+          Price<span onClick={() => toggle_sorter('change')}>/24H Change</span>
+        </span>
         <span onClick={() => toggle_sorter('usdt_amount')}>=USDT</span>
         <span>Action</span>
       </p>

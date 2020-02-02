@@ -15,7 +15,7 @@ export const aggregate_balance = (
   balance: { [key: string]: Balance },
   old_balance: { [key: string]: TickerDetailedInfo }
 ) => {
-  let res: { [key: string]: TickerDetailedInfo } = {};
+  let res: Balance = {};
   for (let i in balance) {
     const current = balance[i];
     const number_freeze = Number(current.freeze);
@@ -51,7 +51,29 @@ export const set_balance_info = (
   };
 };
 
+export const get_ticker_balance = (
+  balance: Balance,
+  ticker: string,
+  key: 'available' | 'freeze' | 'price'
+) => {
+  return balance[ticker] ? balance[ticker][key] || 0 : 0;
+};
 
-export const get_ticker_balance = (balance: Balance, ticker: string, key: 'available' | 'freeze' | 'price') => {
-  return balance[ticker] ? balance[ticker][key] || 0 : 0
-}
+let now = Date.now();
+
+export const get_x_days_ago = (time: number) => {
+  return Math.floor((now - time) / (1000 * 3600 * 24));
+};
+
+export const create_notification = (
+  title: string,
+  body: string,
+  onclick: () => void
+) => {
+  if (!window.Notification) return;
+  const notification = new Notification(title, {
+    body,
+    vibrate: [1, 0.5, 1]
+  });
+  notification.addEventListener('click', onclick);
+};

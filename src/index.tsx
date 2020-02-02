@@ -15,6 +15,7 @@ import * as ReactDOM from 'react-dom';
 import App from './App';
 import './styles/style.less';
 
+
 const render = Component => {
   ReactDOM.render(
     <AppContainer>

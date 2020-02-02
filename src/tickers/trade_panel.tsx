@@ -4,7 +4,6 @@ import Button from 'components/src/button';
 import DialogModal from 'components/src/modal/dialog';
 import { http_buy, http_sell } from 'api';
 import Toast from 'components/src/Toast';
-import { AppContext } from 'App';
 import { set_mem_store, get_mem_store } from '../mem_store';
 
 interface Props {
@@ -105,7 +104,9 @@ const TradePanel = (prop: Props) => {
       >
         <p className='tac f-b'>Confirm</p>
         <p>{buy ? 'Buy' : 'Sell'}</p>
-        <p>Price: {price}</p>
+        <p>
+          Price: {price}, Current Price: {ticker_price}
+        </p>
         <p>Amount: {amount}</p>
         <p>Total: {price * amount}</p>
       </DialogModal>

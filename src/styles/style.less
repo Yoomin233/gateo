@@ -32,47 +32,6 @@ p {
   margin: 0 auto;
 }
 
-.ticker-wrapper {
-  border-bottom: 1px solid #f5cdaa;
-
-
-  &.rise>p:first-child {
-    animation: rise-bg 2s linear 0s 1;
-  }
-
-  &.fall>p:first-child {
-    animation: fall-bg 2s linear 0s 1;
-  }
-
-  >p:first-child {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: right;
-    margin: 0 auto;
-    padding: 0.2em 1em;
-    .ub-button {
-      padding: 0.2em;
-    }
-
-
-    >span {
-      width: 20%;
-
-
-
-      &:first-child {
-        text-align: left;
-        width: 10%;
-
-        >span {
-          font-size: 70%;
-          vertical-align: bottom;
-        }
-      }
-    }
-  }
-}
 
 @keyframes rise-bg {
   0% {
@@ -94,6 +53,69 @@ p {
   }
 }
 
+.ticker-list {
+  >div {
+    border-bottom: 1px solid #f5cdaa;
+
+    &.rise>p:first-child {
+      animation: rise-bg 2s linear 0s 1;
+    }
+
+    &.fall>p:first-child {
+      animation: fall-bg 2s linear 0s 1;
+    }
+
+    >p:first-child {
+      &:hover {
+        background: whitesmoke;
+      }
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-align: right;
+      margin: 0 auto;
+      padding: 0.2em 1em;
+
+      .ub-button {
+        padding: 0.2em;
+      }
+
+
+    }
+  }
+
+  >* {
+    border-bottom: 1px solid #f5cdaa;
+  }
+
+  >p,
+  >div>p {
+
+    >span {
+      flex-grow: 1;
+      width: 20%;
+
+      &:first-child {
+        text-align: left;
+        width: 10%;
+      }
+
+      &:last-child {
+        width: 25%;
+      }
+    }
+
+    >span:not(:last-child)>span {
+      font-size: 70%;
+      vertical-align: bottom;
+    }
+
+  }
+}
+
+
+
 .ticker-header {
   background: #f5cdaa;
   font-weight: bold;
@@ -101,7 +123,6 @@ p {
 
   &:last-child {
     position: sticky;
-
     bottom: 0;
   }
 
@@ -195,9 +216,6 @@ p {
     }
   }
 
-  >div>p:first-child {
-    // border-bottom: 1px solid #f5cdaa;
-  }
 }
 
 .bg_red {
@@ -291,7 +309,7 @@ input {
   z-index: 3;
 }
 
-div.login-modal {
+div.modal-wrapper>div {
   max-width: 500px;
   padding: 1em 2em;
 
@@ -299,9 +317,15 @@ div.login-modal {
     margin-bottom: 0.5em;
   }
 
+
+}
+
+div.login-modal {
+
   .ub-dialog-footer {
     justify-content: center;
   }
+
 }
 
 @media only screen and (max-width: 540px) {

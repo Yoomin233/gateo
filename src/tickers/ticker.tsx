@@ -45,10 +45,15 @@ const Ticker = (prop: Props) => {
           {ticker.ticker}
           <span>/USDT</span>
         </span>
-        <span>{ticker.available.toFixed(4)}</span>
-        <span>{ticker.freeze.toFixed(4)}</span>
-        <span className='f-b'>{ticker.price}</span>
-        <Number num={ticker.change}>%</Number>
+        {/* <span>{ticker.available.toFixed(4)}</span> */}
+        {/* <span>{ticker.freeze.toFixed(4)}</span> */}
+        <span className='f-b'>
+          {ticker.price}
+          <Number num={ticker.change} pre={'/'}>
+            %
+          </Number>
+        </span>
+
         <span>{ticker.usdt_amount.toFixed(2)}</span>
         <span className='cp f-b'>
           <Button
@@ -56,15 +61,15 @@ const Ticker = (prop: Props) => {
               set_expand_trade(!expand_trade);
             }}
           >
-            Trade {expand_trade ? '↓' : '>'}
+            Trade{expand_trade ? '↓' : '>'}
           </Button>
-          <br></br>
+          &nbsp;
           <Button
             onClick={e => {
               set_expand_order(!expand_order);
             }}
           >
-            Order {expand_order ? '↓' : '>'}
+            Orders{expand_order ? '↓' : '>'}
           </Button>
         </span>
       </p>

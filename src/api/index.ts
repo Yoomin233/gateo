@@ -12,6 +12,7 @@ import {
   fake_pending_order,
   fake_finished_order
 } from './fake_data';
+import { TickerDetailedInfo } from 'tickers/tickers_manager';
 
 // export let ws: WebSocket;
 const ws_subscribers: ((data: any) => void)[] = [];
@@ -94,7 +95,7 @@ const promisify_datafeed = <T>(data, timeout = 500): Promise<T> =>
 export const get_balance = () =>
   get_mem_store('is_visitor')
     ? promisify_datafeed(JSON.parse(fake_balance))
-    : ws_promisify<{ result: { [key: string]: Balance } }>('balance.query');
+    : ws_promisify<{ result: { [key: string]: TickerDetailedInfo } }>('balance.query');
 
 export const subscribe_balance = cb => {
   ws_promisify('balance.subscribe');

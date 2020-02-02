@@ -32,7 +32,7 @@ export type PendingOrderInfo = {
   left: string;
   dealFee: string;
   orderType: number;
-  type: 1 | 2;
+  type: 1 | 2; // 1: Sell, 2: Buy
   filledAmount: string;
   filledTotal: string;
 };

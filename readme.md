@@ -4,9 +4,14 @@ gateio.co alternative
 
 ## online demo
 
-see [this link](https://yueminhu.github.io/gateo/output)
+[see this link](https://yueminhu.github.io/gateo/output)
 
-**Attention:** Due to gate.io server response limitations, all http-related requests(query historical orders, place orders) are only available in [local mode](#localmode)(see below)! Websockets are uneffected.
+**Attention:** Due to server response limitations, all http-related requests (querying historical orders, placing orders) will be unavailable unless you check the 'use http proxy' option at login([see below](#http-proxy)). Websockets are uneffected.
+
+You can view as a visitor(click the checkbox 'I am a visitor'), or fill in the `api key` and `api secret` to start viewing your assets & trading. Your key and secret will only be used locally. Key and secret can be generated from [this link](https://www.gateio.co/myaccount/apikeys). **Act with caution!!**
+
+## http-proxy
+If this option is checked, all http requests will be send to my server for transparent proxy, to circumvent the CORS problem. If you are concerned about this, please uncheck this option at login.
 
 ## screenshots
 
@@ -14,11 +19,10 @@ see [this link](https://yueminhu.github.io/gateo/output)
 
 ![alt text](https://i.ibb.co/3m163vC/Screen-Shot-2020-01-31-at-9-30-27-PM.jpg)
 
-## localmode
+### Mobile
+![alt text](https://i.ibb.co/T1jLnJG/IMG-4236-1.jpg)
 
-Http calls are available in this mode, since we set up a proxy server locally.
-
-### usage
+### local dev
 
 ```sh
 git clone --recurse-submodules https://github.com/YueminHu/gateo.git
@@ -28,7 +32,5 @@ npm run dev
 ```
 
 then goto `http://localhost:8080`
-
-From now on you can view as a visitor(click the button 游客登陆), or fill in the `api key` and `api secret` to start viewing your assets & trading. Key and secret can be generated from [this link](https://www.gateio.co/myaccount/apikeys). **Act with caution!!**
 
 **⚠️The author of this repository holds no responsibility to any assets lost caused by using this project. All trading-related requests are thoroughly tested but not guaranteed. Recreational and educational usage only. Miuse may lead to bankruptcy💸!**

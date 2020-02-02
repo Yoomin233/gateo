@@ -25,7 +25,7 @@ const Login = (prop: Props) => {
 
   const [remeber, set_remeber] = React.useState(true);
   const [is_visitor, set_is_visitor] = React.useState(false);
-  const [use_http_proxy, set_use_http_proxy] = React.useState(false);
+  const [use_http_proxy, set_use_http_proxy] = React.useState(true);
 
   const [show, set_show] = React.useState(true);
 
@@ -80,7 +80,7 @@ const Login = (prop: Props) => {
   const btn_disabled =
     !!status || (is_visitor ? false : !api_key || !secret_key);
 
-  console.log(btn_disabled);
+  // console.log(btn_disabled);
 
   return (
     <>

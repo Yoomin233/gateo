@@ -30,23 +30,21 @@ const PendingOrder = (prop: Props) => {
 
   return (
     <p onClick={e => e.stopPropagation()} className={bg_classname}>
+      <span>
+        <Button onClick={cancel} loading={loading}>
+          Cancel
+        </Button>
+      </span>
       <span className='f-b'>
         {order.price}
-        <br></br>
         <span>
-          {diff > 0 ? '+' : ''}
-          {diff.toFixed(2)}({diff > 0 ? '+' : ''}
+          ({diff > 0 ? '+' : ''}
           {to_percent(diff / current_price)})
         </span>
       </span>
       <span>{order.amount}</span>
       <span>{(Number(order.price) * Number(order.amount)).toFixed(2)}</span>
       <span>{order.type === 1 ? 'Sell' : 'Buy'}</span>
-      <span>
-        <Button onClick={cancel} loading={loading}>
-          Cancel
-        </Button>
-      </span>
     </p>
   );
 };
