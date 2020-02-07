@@ -117,14 +117,15 @@ const OrdersManager = (prop: Props) => {
         }}
       >
         <div>
-          <p className='tac f-b framed'>Pending Orders</p>
+          <p className='tac f-b framed'>{ticker.ticker} Pending Orders</p>
           <div className='table' tabIndex={-1}>
             <p>
               <span>Cancel</span>
               <span>Price</span>
+              <span>Diff</span>
               <span>Amount</span>
               <span>Total</span>
-              <span>Direction</span>
+              <span>Type</span>
             </p>
             {!pending_orders_fetched ? (
               loading
@@ -150,7 +151,7 @@ const OrdersManager = (prop: Props) => {
         </div>
         <div>
           <p className='tac f-b framed'>
-            Latest Orders&nbsp;
+          {ticker.ticker} Latest Orders&nbsp;
             <span onClick={get_finished_orders} className='fs-1 cp'>
               Refresh
             </span>
@@ -160,7 +161,7 @@ const OrdersManager = (prop: Props) => {
               <span>Price</span>
               <span>Amount</span>
               <span>Total</span>
-              <span>Direction</span>
+              <span>Type</span>
               <span>Days Ago</span>
               <span>Margin</span>
             </p>

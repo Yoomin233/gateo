@@ -1,4 +1,4 @@
-import { TickerDetailedInfo } from "tickers/tickers_manager";
+import { TickerDetailedInfo } from 'tickers/tickers_manager';
 
 export type User = {
   api_key: string;
@@ -6,7 +6,7 @@ export type User = {
 };
 
 export type Balance = {
-  [key: string]: TickerDetailedInfo
+  [key: string]: TickerDetailedInfo;
 };
 
 export type TickerInfo = {
@@ -60,3 +60,15 @@ export type OrderQueryResp = {
   total: number;
   records: PendingOrderInfo[];
 };
+
+export type KLineData = [
+  string, //   time: 时间戳
+  string, //   volume: 交易量
+
+  string, //   close: 收盘价
+
+  string, //   high: 最高价
+
+  string, //   low: 最低价
+  string //   open: 开盘价
+];

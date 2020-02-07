@@ -37,10 +37,13 @@ const PendingOrder = (prop: Props) => {
       </span>
       <span className='f-b'>
         {order.price}
-        <span>
-          ({diff > 0 ? '+' : ''}
-          {to_percent(diff / current_price)})
-        </span>
+        {/* <span>
+          
+        </span> */}
+      </span>
+      <span>
+        {diff > 0 ? '+' : ''}
+        {to_percent(diff / current_price)}
       </span>
       <span>{order.amount}</span>
       <span>{(Number(order.price) * Number(order.amount)).toFixed(2)}</span>

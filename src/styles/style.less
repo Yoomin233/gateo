@@ -10,9 +10,9 @@ body {
 
 }
 
-body {
-  font-size: 0.85em;
-}
+// body {
+//   font-size: 0.85em;
+// }
 
 #root {
   width: 100%;
@@ -94,16 +94,16 @@ p {
 
     >span {
       flex-grow: 1;
-      width: 20%;
+      width: 25%;
 
       &:first-child {
         text-align: left;
-        width: 10%;
+        width: 8%;
       }
 
-      &:last-child {
-        width: 25%;
-      }
+      // &:last-child {
+      //   width: 25%;
+      // }
     }
 
     >span:not(:last-child)>span {
@@ -161,7 +161,7 @@ p {
 
       &:first-child {
         text-align: left;
-        width: 10%;
+        // width: 10%;
       }
     }
   }
@@ -257,21 +257,22 @@ p {
   }
 
   >div>p {
-    margin-bottom: 0.3em;
+    margin-bottom: 0.5em;
 
     &:not(:first-child) {
       font-size: 80%;
     }
 
     >span {
-      display: inline-flex;
+      // display: inline-flex;
       cursor: pointer;
       flex-grow: 1;
+      // text-align: center;
 
-      &:nth-child(2) {
-        margin-left: 1em;
+      // &:nth-child(2) {
+      //   margin-left: 1em;
 
-      }
+      // }
 
       // padding: 0 0.2em;
     }
@@ -329,9 +330,9 @@ div.login-modal {
 }
 
 @media only screen and (max-width: 540px) {
-  body {
-    font-size: 12px;
-  }
+  // body {
+  //   font-size: 12px;
+  // }
 
   .ticker-details {
     flex-wrap: wrap;
@@ -343,5 +344,27 @@ div.login-modal {
     .table {
       max-height: 40vw;
     }
+  }
+}
+
+.f-line-container {
+  padding: 0.5em;
+  >p {
+    justify-content: space-around;
+    >span {
+      text-align: center;
+      &.selected {
+        text-decoration: underline;
+      }
+    }
+  }
+  >canvas, >div {
+    width: 100%;
+    height: 200px;
+  }
+  >div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }

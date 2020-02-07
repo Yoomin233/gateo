@@ -71,19 +71,19 @@ const TradePanel = (prop: Props) => {
             }}
           ></Input>
         </p>
-        <p className='flexSpread'>
+        <p>
           <Input
             prefixElement={<span>Amount: </span>}
             type='number'
             onChange={e => set_amount(Number(e.target.value))}
             value={amount}
           ></Input>
-          <span className='flexSpread'>
-            <span onClick={set_num(0.25)}>25%</span>
-            <span onClick={set_num(0.5)}>50%</span>
-            <span onClick={set_num(0.75)}>75%</span>
-            <span onClick={set_num(1)}>100%</span>
-          </span>
+        </p>
+        <p className='flexSpread'>
+          <span onClick={set_num(0.25)}>25%</span>
+          <span onClick={set_num(0.5)}>50%</span>
+          <span onClick={set_num(0.75)}>75%</span>
+          <span onClick={set_num(1)}>100%</span>
         </p>
         <p>
           {buy ? 'Cost' : 'Income'}: {(price * amount).toFixed(4)} USDT

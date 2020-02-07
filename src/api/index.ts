@@ -3,7 +3,13 @@ var crypto = require('crypto');
 
 import Axios from 'axios';
 
-import { Balance, TickerInfo, OrderQueryResp, FinishedOrderInfo } from 'types';
+import {
+  Balance,
+  TickerInfo,
+  OrderQueryResp,
+  FinishedOrderInfo,
+  KLineData
+} from 'types';
 import { get_sign } from 'utils';
 import Toast from 'components/src/Toast';
 import { set_mem_store, get_mem_store } from '../mem_store';
@@ -17,18 +23,37 @@ import { TickerDetailedInfo } from 'tickers/tickers_manager';
 // export let ws: WebSocket;
 const ws_subscribers: ((data: any) => void)[] = [];
 
-export const connect_ws = () => {
-  const ws = set_mem_store('ws', new WebSocket('wss://ws.gate.io/v3/'));
-  ws.addEventListener('message', e => {
-    const data = JSON.parse(e.data);
-    ws_subscribers.forEach(cb => cb(data));
+const ws_hosts = ['wss://ws.gate.io/v3/', 'wss://ws.gateio.io/v3/'];
+
+export const connect_ws = (reconnect?: boolean) => {
+  const set_ws = (
+    ws: WebSocket,
+    res: (value?: WebSocket) => void,
+    timer?: NodeJS.Timeout
+  ) =>
+    ws.addEventListener('open', () => {
+      ws.addEventListener('message', e => {
+        const data = JSON.parse(e.data);
+        ws_subscribers.forEach(cb => cb(data));
+      });
+      // ws.addEventListener('close', () => connect_ws(true));
+      clearTimeout(timer);
+      set_mem_store('ws', ws);
+      res(ws);
+    });
+  return new Promise<WebSocket>((res, rej) => {
+    let ws = new WebSocket(ws_hosts[0]);
+    let switch_ws_timer = setTimeout(() => {
+      ws = new WebSocket(ws_hosts[1]);
+      set_ws(ws, res);
+    }, 10000);
+    set_ws(ws, res, switch_ws_timer);
   });
-  return ws;
 };
 
 // export const get_ws_instance = () => ws;
 
-connect_ws();
+// connect_ws();
 
 export const subscribe_ws = <T>(cb: (data: T & { method: string }) => void) => {
   ws_subscribers.push(cb);
@@ -95,7 +120,9 @@ const promisify_datafeed = <T>(data, timeout = 500): Promise<T> =>
 export const get_balance = () =>
   get_mem_store('is_visitor')
     ? promisify_datafeed(JSON.parse(fake_balance))
-    : ws_promisify<{ result: { [key: string]: TickerDetailedInfo } }>('balance.query');
+    : ws_promisify<{ result: { [key: string]: TickerDetailedInfo } }>(
+        'balance.query'
+      );
 
 export const subscribe_balance = cb => {
   ws_promisify('balance.subscribe');
@@ -124,6 +151,19 @@ export const query_orders = (market: string, offset = 0, limit = 50) =>
         limit
       ]);
 
+export const query_kline = (
+  market: string,
+  start: number,
+  end: number,
+  interval: number
+) =>
+  ws_promisify<{ result: KLineData[] }>('kline.query', [
+    market,
+    start,
+    end,
+    interval
+  ]);
+
 function get_http_sign(str: string, secret: string) {
   let unescapeStr = unescape(str);
   return crypto
@@ -138,10 +178,13 @@ const is_localhost =
 
 const http_factory = <T>(
   url: string,
-  params: { [key: string]: any } = {}
+  params: { [key: string]: any } = {},
+  method: 'post' | 'get' = 'post'
 ): Promise<HttpResp & T> => {
   if (!is_localhost && !get_mem_store('use_http_proxy')) {
-    Toast.show('http methods is only available when running on localhost, if http proxy is not used!');
+    Toast.show(
+      'http methods is only available when running on localhost, if http proxy is not used!'
+    );
     return Promise.reject();
   }
   const data = querystring.stringify(params);
@@ -149,7 +192,7 @@ const http_factory = <T>(
   const new_url = get_mem_store('use_http_proxy')
     ? `${'https://www.yoomin.me'}/gate-api${url}`
     : url;
-  return Axios.post(new_url, data, {
+  return Axios[`${method}`](new_url, data, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       KEY: user_info_storage.api_key,
@@ -157,7 +200,7 @@ const http_factory = <T>(
     }
   })
     .then(resp => {
-      if (resp.data.code !== 0) {
+      if (resp.data.code && resp.data.code !== 0) {
         Toast.show(resp.data.message);
       }
       return resp.data;
@@ -190,6 +233,7 @@ interface HttpResp {
   result: string;
   message: string;
   code: number;
+  data?: any;
 }
 
 export const http_buy = (currencyPair: string, rate: string, amount: string) =>
@@ -205,3 +249,17 @@ export const http_sell = (currencyPair: string, rate: string, amount: string) =>
     rate,
     amount
   });
+
+export const http_query_k_line = (
+  token: string,
+  group_sec: number,
+  range_hour: number
+) =>
+  http_factory(
+    `/api2/1/candlestick2/${token.toLowerCase()}?group_sec=${group_sec}&range_hour=${range_hour}`,
+    {
+      group_sec,
+      range_hour
+    },
+    'get'
+  );

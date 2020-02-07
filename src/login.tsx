@@ -60,21 +60,23 @@ const Login = (prop: Props) => {
     }
   };
 
-  React.useEffect(() => {
-    get_mem_store('ws').addEventListener('open', async () => {
+  const connect = () => {
+    connect_ws().then(ws => {
+      ws.addEventListener('close', function() {
+        console.log('ws disconnect!');
+        set_status('Websocket Disconnected');
+        setTimeout(() => {
+          console.log('reconnect');
+          connect();
+        }, 500);
+      });
+      get_mem_store('logged_in') && log();
       set_status('');
     });
-    get_mem_store('ws').addEventListener('close', function() {
-      console.log('ws disconnect!');
-      set_status('Websocket Disconnected');
-      setTimeout(() => {
-        console.log('reconnect');
-        connect_ws().addEventListener('open', () => {
-          set_status('');
-          get_mem_store('logged_in') && log();
-        });
-      }, 5000);
-    });
+  };
+
+  React.useEffect(() => {
+    connect();
   }, []);
 
   const btn_disabled =
@@ -85,7 +87,7 @@ const Login = (prop: Props) => {
   return (
     <>
       <div className='ws-indicator'>
-        <span onClick={connect_ws}>Status: {status || 'online'}</span>
+        <span onClick={connect}>Status: {status || 'online'}</span>
       </div>
       <DialogModal
         show={show}
@@ -145,10 +147,11 @@ const Login = (prop: Props) => {
             <label htmlFor='use_http_proxy'>
               Use Http Proxy
               <Tip trigger='hover'>
-                When checked, http requests will be send to a proxy server(www.yoomin.me) to
-                circumvent the CORS limitation imposed by gate.io server. If you
-                are concerned about sending credentials to my server, please do not check, but http-related requests
-                will be unavailable.
+                When checked, http requests will be send to a proxy
+                server(www.yoomin.me) to circumvent the CORS limitation imposed
+                by gate.io server. If you are concerned about sending
+                credentials to my server, please do not check, but http-related
+                requests will be unavailable.
               </Tip>
             </label>
           </p>

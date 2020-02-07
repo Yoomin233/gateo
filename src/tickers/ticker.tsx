@@ -10,6 +10,7 @@ import Number from './number';
 import OrdersManager from './orders_manager';
 import TradeManager from './trade_manager';
 import Button from 'components/src/button';
+import KLine from './k_line';
 
 interface Props {
   ticker: TickerDetailedInfo;
@@ -25,6 +26,7 @@ const Ticker = (prop: Props) => {
 
   const [expand_order, set_expand_order] = React.useState(false);
   const [expand_trade, set_expand_trade] = React.useState(false);
+  const [expand_k_line, set_expand_k_line] = React.useState(false);
 
   React.useEffect(() => {
     if (last_price.current > ticker.price && last_price.current) {
@@ -43,12 +45,12 @@ const Ticker = (prop: Props) => {
       <p>
         <span>
           {ticker.ticker}
+          <br />
           <span>/USDT</span>
         </span>
-        {/* <span>{ticker.available.toFixed(4)}</span> */}
-        {/* <span>{ticker.freeze.toFixed(4)}</span> */}
         <span className='f-b'>
           {ticker.price}
+          <br />
           <Number num={ticker.change} pre={'/'}>
             %
           </Number>
@@ -58,10 +60,18 @@ const Ticker = (prop: Props) => {
         <span className='cp f-b'>
           <Button
             onClick={e => {
+              set_expand_k_line(!expand_k_line);
+            }}
+          >
+            K{expand_k_line ? '↓' : '>'}
+          </Button>
+          &nbsp;
+          <Button
+            onClick={e => {
               set_expand_trade(!expand_trade);
             }}
           >
-            Trade{expand_trade ? '↓' : '>'}
+            T{expand_trade ? '↓' : '>'}
           </Button>
           &nbsp;
           <Button
@@ -69,10 +79,11 @@ const Ticker = (prop: Props) => {
               set_expand_order(!expand_order);
             }}
           >
-            Orders{expand_order ? '↓' : '>'}
+            O{expand_order ? '↓' : '>'}
           </Button>
         </span>
       </p>
+      <KLine ticker={ticker} expand={expand_k_line}></KLine>
       <TradeManager ticker={ticker} expand={expand_trade}></TradeManager>
       <OrdersManager ticker={ticker} expand={expand_order}></OrdersManager>
     </div>
