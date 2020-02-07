@@ -32,15 +32,14 @@ const Login = (prop: Props) => {
   const [status, set_status] = React.useState('Connecting...');
 
   const log = async () => {
+    set_mem_store('use_http_proxy', use_http_proxy);
     if (is_visitor) {
       set_mem_store('is_visitor', true);
       set_show(false);
       finish_login_cb(true);
       return;
     }
-    if (set_use_http_proxy) {
-      set_mem_store('use_http_proxy', true);
-    }
+
     set_status('Logging...');
     const res = await login(api_key, secret_key);
     if (res.result.status === 'success') {
@@ -135,27 +134,25 @@ const Login = (prop: Props) => {
             </Tip>
           </label>
         </p>
-        {!is_visitor && (
-          <p>
-            <input
-              id='use_http_proxy'
-              type='checkbox'
-              checked={use_http_proxy}
-              onChange={e => set_use_http_proxy(e.target.checked)}
-              // disabled={is_visitor}
-            ></input>
-            <label htmlFor='use_http_proxy'>
-              Use Http Proxy
-              <Tip trigger='hover'>
-                When checked, http requests will be send to a proxy
-                server(www.yoomin.me) to circumvent the CORS limitation imposed
-                by gate.io server. If you are concerned about sending
-                credentials to my server, please do not check, but http-related
-                requests will be unavailable.
-              </Tip>
-            </label>
-          </p>
-        )}
+        <p>
+          <input
+            id='use_http_proxy'
+            type='checkbox'
+            checked={use_http_proxy}
+            onChange={e => set_use_http_proxy(e.target.checked)}
+            // disabled={is_visitor}
+          ></input>
+          <label htmlFor='use_http_proxy'>
+            Use Http Proxy
+            <Tip trigger='hover'>
+              When checked, http requests will be send to a proxy
+              server(www.yoomin.me) to circumvent the CORS limitation imposed by
+              gate.io server. If you are concerned about sending credentials to
+              my server, please do not check, but http-related requests will be
+              unavailable.
+            </Tip>
+          </label>
+        </p>
         <p>
           <input
             id='is_visitor'

@@ -6,7 +6,7 @@ import { query_kline, http_query_k_line } from 'api';
 import F2 from '@antv/f2';
 import UBLogo from 'components/src/ub-logo';
 
-const get_chart = (data: KLineData[], interval: number) => {
+const get_chart = (data: KLineData[], interval: number, id: string) => {
   const source = [];
   data.forEach(function(obj) {
     source.push({
@@ -19,7 +19,7 @@ const get_chart = (data: KLineData[], interval: number) => {
     });
   });
   const chart = new F2.Chart({
-    id: 'f2-container',
+    id,
     pixelRatio: window.devicePixelRatio,
     appendPadding: 0, // 不留空隙
     padding: [8, 'auto', 'auto', 'auto']
@@ -122,6 +122,8 @@ interface Props {
 
 type intervals = 60 | 600 | 3600 | 28800 | 86400;
 
+let idx = 0;
+
 const KLine = (prop: Props) => {
   const { ticker, expand } = prop;
   const [interval, set_interval] = React.useState<intervals>(60);
@@ -133,31 +135,35 @@ const KLine = (prop: Props) => {
     }
   >({});
 
-  const timer = React.useRef(null);
+  const id_num = React.useRef(idx++);
 
   const get_k_line = () => {
-    if (datas[interval]) return get_chart(datas[interval], interval);
+    if (datas[interval])
+      return get_chart(
+        datas[interval],
+        interval,
+        `f2-container-${id_num.current}`
+      );
     set_loading(true);
     http_query_k_line(`${ticker.ticker}_USDT`, interval, interval / 60).then(
       r => {
-        set_loading(false);
-        set_datas(datas => ({
-          [interval]: r.data,
-          ...datas
-        }));
-        get_chart(r.data, interval);
+        if (r.result === 'true') {
+          set_loading(false);
+          // console.log(r.data);
+          set_datas(datas => ({
+            [interval]: r.data,
+            ...datas
+          }));
+          requestAnimationFrame(() => {
+            get_chart(r.data, interval, `f2-container-${id_num.current}`);
+          });
+        }
       }
     );
   };
 
   React.useEffect(() => {
-    if (expand) {
-      get_k_line();
-      // if (interval === 60) {
-      //   timer.current = setInterval(get_k_line, 60000);
-      // }
-    }
-    // return () => clearInterval(timer.current);
+    expand && get_k_line();
   }, [expand, interval]);
   const set_interval_func = (seconds: intervals) => () => set_interval(seconds);
   return (
@@ -204,7 +210,7 @@ const KLine = (prop: Props) => {
           <UBLogo size='30'></UBLogo>
         </div>
       ) : (
-        <canvas id='f2-container'></canvas>
+        <canvas id={`f2-container-${id_num.current}`}></canvas>
       )}
     </div>
   );
