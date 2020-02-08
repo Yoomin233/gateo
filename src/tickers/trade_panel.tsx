@@ -49,7 +49,15 @@ const TradePanel = (prop: Props) => {
     });
   };
 
-  const number_setter = (e, setter) => {};
+  const number_setter = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    setter: React.Dispatch<React.SetStateAction<number>>
+  ) => {
+    const keyCode = e.nativeEvent.keyCode
+    if (keyCode <= 57 && keyCode >= 48 || keyCode === 190) {
+      // const content = parseFloat(e.target.value)
+    }
+  };
 
   return (
     <>
@@ -74,7 +82,6 @@ const TradePanel = (prop: Props) => {
         <p>
           <Input
             prefixElement={<span>Amount: </span>}
-            type='number'
             onChange={e => set_amount(Number(e.target.value))}
             value={amount}
           ></Input>

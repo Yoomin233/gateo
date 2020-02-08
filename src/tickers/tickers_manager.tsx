@@ -113,10 +113,10 @@ const TickerManager = (prop: Props) => {
     <div className='table ticker-list'>
       <p className='flexSpread ticker-header'>
         <span onClick={() => toggle_sorter('ticker')}>Token</span>
-        {/* <span>Available</span> */}
-        {/* <span>Freeze</span> */}
         <span onClick={() => toggle_sorter('price')}>
-          Price<span onClick={() => toggle_sorter('change')}>/24H Change</span>
+          Price
+          <br />
+          <span onClick={() => toggle_sorter('change')}>/Change</span>
         </span>
         <span onClick={() => toggle_sorter('usdt_amount')}>=USDT</span>
         <span>Action</span>

@@ -43,7 +43,7 @@ const Ticker = (prop: Props) => {
   return (
     <div className={`ticker-wrapper ${rise}`}>
       <p>
-        <span>
+        <span className='f-b'>
           {ticker.ticker}
           <br />
           <span>/USDT</span>
@@ -51,9 +51,7 @@ const Ticker = (prop: Props) => {
         <span className='f-b'>
           {ticker.price}
           <br />
-          <Number num={ticker.change} pre={'/'}>
-            %
-          </Number>
+          <Number num={ticker.change}>%</Number>
         </span>
 
         <span>{ticker.usdt_amount.toFixed(2)}</span>
@@ -62,24 +60,27 @@ const Ticker = (prop: Props) => {
             onClick={e => {
               set_expand_k_line(!expand_k_line);
             }}
+            className={expand_k_line ? 'expanded' : ''}
           >
-            K{expand_k_line ? '↓' : '>'}
+            <img src={require('../assets/candle-sticks.png')}></img>
           </Button>
           &nbsp;
           <Button
             onClick={e => {
               set_expand_trade(!expand_trade);
             }}
+            className={expand_trade ? 'expanded' : ''}
           >
-            T{expand_trade ? '↓' : '>'}
+            <img src={require('../assets/trade.png')}></img>
           </Button>
           &nbsp;
           <Button
             onClick={e => {
               set_expand_order(!expand_order);
             }}
+            className={expand_order ? 'expanded' : ''}
           >
-            O{expand_order ? '↓' : '>'}
+            <img src={require('../assets/bill.png')}></img>
           </Button>
         </span>
       </p>

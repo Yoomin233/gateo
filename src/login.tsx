@@ -29,7 +29,9 @@ const Login = (prop: Props) => {
 
   const [show, set_show] = React.useState(true);
 
-  const [status, set_status] = React.useState('Connecting...');
+  const [status, set_status] = React.useState<
+    'connecting' | 'disconnected' | 'online' | 'logging' | ''
+  >('connecting');
 
   const log = async () => {
     set_mem_store('use_http_proxy', use_http_proxy);
@@ -40,7 +42,7 @@ const Login = (prop: Props) => {
       return;
     }
 
-    set_status('Logging...');
+    set_status('logging');
     const res = await login(api_key, secret_key);
     if (res.result.status === 'success') {
       if (remeber) {
@@ -60,10 +62,11 @@ const Login = (prop: Props) => {
   };
 
   const connect = () => {
+    set_status('connecting');
     connect_ws().then(ws => {
       ws.addEventListener('close', function() {
         console.log('ws disconnect!');
-        set_status('Websocket Disconnected');
+        set_status('disconnected');
         setTimeout(() => {
           console.log('reconnect');
           connect();
@@ -86,7 +89,10 @@ const Login = (prop: Props) => {
   return (
     <>
       <div className='ws-indicator'>
-        <span onClick={connect}>Status: {status || 'online'}</span>
+        Status:
+        <span onClick={connect} className={status || 'online'}>
+          {status.toUpperCase() || 'Online'}
+        </span>
       </div>
       <DialogModal
         show={show}

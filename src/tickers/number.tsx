@@ -3,7 +3,7 @@ import * as React from 'react';
 interface Props {
   num: number;
   children: React.ReactNode;
-  pre: React.ReactNode;
+  pre?: React.ReactNode;
 }
 
 const Number = (prop: Props) => {
