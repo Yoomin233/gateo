@@ -126,7 +126,7 @@ let idx = 0;
 
 const KLine = (prop: Props) => {
   const { ticker, expand } = prop;
-  const [interval, set_interval] = React.useState<intervals>(60);
+  const [interval, set_interval] = React.useState<intervals>(600);
   const [loading, set_loading] = React.useState(false);
 
   const [datas, set_datas] = React.useState<
@@ -138,31 +138,28 @@ const KLine = (prop: Props) => {
   const id_num = React.useRef(idx++);
 
   const get_k_line = () => {
-    if (datas[interval])
-      return get_chart(
-        datas[interval],
-        interval,
-        `f2-container-${id_num.current}`
-      );
-    set_loading(true);
+    const has_data = datas[interval];
+    if (!has_data) {
+      set_loading(true);
+    } else {
+      get_chart(datas[interval], interval, `f2-container-${id_num.current}`);
+    }
     http_query_k_line(`${ticker.ticker}_USDT`, interval, interval / 60).then(
       r => {
         if (r.result === 'true') {
           set_loading(false);
-          // console.log(r.data);
           set_datas(datas => ({
             [interval]: r.data,
             ...datas
           }));
-          requestAnimationFrame(() => {
-            get_chart(r.data, interval, `f2-container-${id_num.current}`);
-          });
+          get_chart(r.data, interval, `f2-container-${id_num.current}`);
         }
       }
     );
   };
 
   React.useEffect(() => {
+    if (expand && loading) set_loading(false);
     expand && get_k_line();
   }, [expand, interval]);
   const set_interval_func = (seconds: intervals) => () => set_interval(seconds);
