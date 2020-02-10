@@ -122,6 +122,7 @@ const TradePanel = (prop: Props) => {
         show={input_pad}
         setter={input_pad_setter.current}
         dismiss={() => set_input_pad(false)}
+        init_val={input_pad_setter.current === set_price ? price : amount}
       ></InputPad>
     </>
   );

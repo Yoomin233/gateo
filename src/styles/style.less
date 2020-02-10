@@ -53,7 +53,7 @@ p {
   }
 
   100% {
-    background: transparent;
+    background: #fff;
   }
 }
 
@@ -63,7 +63,7 @@ p {
   }
 
   100% {
-    background: transparent;
+    background: #fff;
   }
 }
 
@@ -80,6 +80,11 @@ p {
     }
 
     >p:first-child {
+      position: sticky;
+      top: 2em;
+      background: #fff;
+      z-index: 10;
+
       &:hover {
         background: whitesmoke;
       }
@@ -144,11 +149,13 @@ p {
   &:last-child {
     position: sticky;
     bottom: 0;
+    z-index: 12;
   }
 
   &:first-child {
     position: sticky;
     top: 0;
+    z-index: 12;
   }
 }
 
@@ -330,7 +337,7 @@ input {
   padding: 0.5em;
   background: whitesmoke;
   border-radius: 0.2em;
-  z-index: 3;
+  z-index: 14;
   .box-shadow();
 
   >span {

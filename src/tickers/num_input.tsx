@@ -12,18 +12,22 @@ interface Props {
 }
 
 const InputPad = (prop: Props) => {
-  const { show, setter, dismiss } = prop;
+  const { show, setter, dismiss, init_val } = prop;
   const [value, set_value] = React.useState('');
   // const touched = React.useRef(false)
   const input_setter = (val: string) => () =>
     set_value(prev_val => {
+      if (val === 'C') return '0';
       if (val === '.') {
         if (!prev_val) return '';
         if (prev_val.indexOf('.') !== -1) return prev_val;
       }
-      if (val === 'C') return '';
+      if (prev_val === '0') return val;
       return prev_val + val;
     });
+  React.useEffect(() => {
+    show && init_val !== undefined && set_value(`${init_val}`);
+  }, [show]);
   return (
     <DialogModal
       show={show}
