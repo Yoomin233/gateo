@@ -145,7 +145,7 @@ const OrdersManager = (prop: Props) => {
                   ))}
               </>
             ) : (
-              <p className='tac'>No Records!</p>
+              <p className='tac'>No records!</p>
             )}
           </div>
         </div>
