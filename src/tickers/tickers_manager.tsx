@@ -124,11 +124,17 @@ const TickerManager = (prop: Props) => {
         <Ticker key={b.ticker} ticker={balance[b.ticker]} idx={_idx}></Ticker>
       ))}
       <p className='flexSpread ticker-header'>
-        <span>Total Assets</span>
+        <span className={`ws-indicator ${status || 'online'}`}>
+          Status:
+          {status.toUpperCase() || 'Online'}
+        </span>
         <span>
-          (crypto {to_percent(crypto_assets / total_assets)}, usdt{' '}
-          {to_percent(usdt_assets / total_assets)}){total_assets.toFixed(2)}{' '}
-          USDT
+          (<img src={require('./assets/cryptocurrency.png')}></img>
+          {to_percent(crypto_assets / total_assets)},
+          <img src={require('./assets/usdt.png')}></img>
+          {to_percent(usdt_assets / total_assets)})=
+          <img src={require('./assets/usdt.png')}></img>
+          {total_assets.toFixed(2)}
         </span>
       </p>
     </div>

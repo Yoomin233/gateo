@@ -12,16 +12,28 @@ import UBLogo from 'components/src/ub-logo';
 import TickerManager, { TickerDetailedInfo } from './tickers/tickers_manager';
 import { get_mem_store, set_mem_store } from './mem_store';
 
+export type ws_status =
+  | 'connecting'
+  | 'disconnected'
+  | 'online'
+  | 'logging'
+  | '';
+
 export const AppContext = React.createContext<{
   balance: Balance;
   set_balance: React.Dispatch<React.SetStateAction<Balance>>;
+  ws_status: ws_status;
+  set_ws_status: React.Dispatch<React.SetStateAction<ws_status>>;
 }>({
   balance: {},
-  set_balance: () => {}
+  set_balance: () => {},
+  ws_status: 'connecting',
+  set_ws_status: (status: ws_status) => void 0
 });
 
 export default () => {
   const [balance, set_balance] = React.useState<Balance>({});
+  const [status, set_ws_status] = React.useState<ws_status>('connecting');
 
   const [fetching, set_fetching] = React.useState(true);
 
@@ -63,7 +75,9 @@ export default () => {
     <AppContext.Provider
       value={{
         balance,
-        set_balance
+        set_balance,
+        ws_status: status,
+        set_ws_status
       }}
     >
       {fetching ? (

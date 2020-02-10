@@ -5,6 +5,7 @@ import Input from 'components/src/input';
 import { login, user_info_storage, connect_ws } from 'api';
 import { set_mem_store, get_mem_store } from './mem_store';
 import Tip from 'components/src/tip';
+import { AppContext } from 'App';
 
 const storage_api_key = 'api_key';
 const storage_secret_key = 'secret_key';
@@ -15,6 +16,8 @@ interface Props {
 
 const Login = (prop: Props) => {
   const { finish_login_cb } = prop;
+
+  const { ws_status, set_ws_status } = React.useContext(AppContext);
 
   const [api_key, set_api_key] = React.useState(
     localStorage.getItem(storage_api_key) || ''
@@ -29,10 +32,6 @@ const Login = (prop: Props) => {
 
   const [show, set_show] = React.useState(true);
 
-  const [status, set_status] = React.useState<
-    'connecting' | 'disconnected' | 'online' | 'logging' | ''
-  >('connecting');
-
   const log = async () => {
     set_mem_store('use_http_proxy', use_http_proxy);
     if (is_visitor) {
@@ -42,7 +41,7 @@ const Login = (prop: Props) => {
       return;
     }
 
-    set_status('logging');
+    set_ws_status('logging');
     const res = await login(api_key, secret_key);
     if (res.result.status === 'success') {
       if (remeber) {
@@ -56,24 +55,24 @@ const Login = (prop: Props) => {
       user_info_storage.secret_key = secret_key;
       finish_login_cb();
       set_show(false);
-      set_status('');
+      set_ws_status('');
       set_mem_store('logged_in', true);
     }
   };
 
   const connect = () => {
-    set_status('connecting');
+    set_ws_status('connecting');
     connect_ws().then(ws => {
       ws.addEventListener('close', function() {
         console.log('ws disconnect!');
-        set_status('disconnected');
+        set_ws_status('disconnected');
         setTimeout(() => {
           console.log('reconnect');
           connect();
         }, 500);
       });
       get_mem_store('logged_in') && log();
-      set_status('');
+      set_ws_status('');
     });
   };
 
@@ -88,12 +87,12 @@ const Login = (prop: Props) => {
 
   return (
     <>
-      <div className='ws-indicator'>
+      {/* <div className='ws-indicator'>
         Status:
         <span onClick={connect} className={status || 'online'}>
           {status.toUpperCase() || 'Online'}
         </span>
-      </div>
+      </div> */}
       <DialogModal
         show={show}
         dismiss={() => {}}
