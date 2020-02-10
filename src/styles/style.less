@@ -39,6 +39,7 @@ body {
 
 * {
   box-sizing: border-box;
+  user-select: none;
 }
 
 p {
@@ -94,7 +95,7 @@ p {
         padding: 0.2em;
 
         &.expanded {
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+          box-shadow: inset 0 0px 3px rgba(0, 0, 0, 0.3);
         }
 
         >img {
@@ -418,5 +419,29 @@ div.login-modal {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+}
+
+div.num-input-wrapper {
+  >span {
+    display: block;
+    text-align: right;
+    font-size: 1.5em;
+    min-height: 2em;
+    line-height: 2em;
+    margin-bottom: 0;
+    letter-spacing: 0.1em;
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  >button {
+    display: inline-block;
+    width: 33.33%;
+    padding: 1em 0;
+    border-radius: 0;
+  }
+
+  >div.ub-dialog-footer {
+    margin-top: 1em;
   }
 }

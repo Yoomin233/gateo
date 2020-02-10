@@ -22,7 +22,8 @@ const get_chart = (data: KLineData[], interval: number, id: string) => {
     id,
     pixelRatio: window.devicePixelRatio,
     appendPadding: 0, // 不留空隙
-    padding: [8, 'auto', 'auto', 'auto']
+    padding: [8, 'auto', 'auto', 'auto'],
+    animate: false
   });
 
   chart.source(source, {
@@ -76,7 +77,7 @@ const get_chart = (data: KLineData[], interval: number, id: string) => {
   });
   chart.axis('time', {
     label: function label(text, index, total) {
-      const textCfg = {
+      const textCfg: any = {
         fill: '#5d5b6a'
       };
       if (index === 0) {
@@ -136,6 +137,7 @@ const KLine = (prop: Props) => {
   >({});
 
   const id_num = React.useRef(idx++);
+  const timer = React.useRef(null);
 
   const get_k_line = () => {
     const has_data = datas[interval];
@@ -160,8 +162,14 @@ const KLine = (prop: Props) => {
 
   React.useEffect(() => {
     if (expand && loading) set_loading(false);
-    expand && get_k_line();
+    if (expand) {
+      get_k_line();
+      clearInterval(timer.current);
+      timer.current = setInterval(get_k_line, interval * 1000);
+    }
+    return () => clearInterval(timer.current);
   }, [expand, interval]);
+
   const set_interval_func = (seconds: intervals) => () => set_interval(seconds);
   return (
     <div

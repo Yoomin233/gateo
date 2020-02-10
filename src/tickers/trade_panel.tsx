@@ -5,6 +5,7 @@ import DialogModal from 'components/src/modal/dialog';
 import { http_buy, http_sell } from 'api';
 import Toast from 'components/src/Toast';
 import { set_mem_store, get_mem_store } from '../mem_store';
+import InputPad from './num_input';
 
 interface Props {
   ticker_price: number;
@@ -22,6 +23,8 @@ const TradePanel = (prop: Props) => {
   const [amount, set_amount] = React.useState(0);
 
   const [modal, set_modal] = React.useState(false);
+  const [input_pad, set_input_pad] = React.useState<boolean>(false);
+  const input_pad_setter = React.useRef(null);
 
   React.useEffect(() => {
     if (ticker_price && !price) set_price(ticker_price);
@@ -49,16 +52,6 @@ const TradePanel = (prop: Props) => {
     });
   };
 
-  const number_setter = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    setter: React.Dispatch<React.SetStateAction<number>>
-  ) => {
-    const keyCode = e.nativeEvent.keyCode
-    if (keyCode <= 57 && keyCode >= 48 || keyCode === 190) {
-      // const content = parseFloat(e.target.value)
-    }
-  };
-
   return (
     <>
       <div>
@@ -71,18 +64,26 @@ const TradePanel = (prop: Props) => {
         <p>
           <Input
             prefixElement={<span>Price: </span>}
-            type='number'
-            onChange={e => set_price(Number(e.target.value))}
+            // onChange={e => set_price(Number(e.target.value))}
             value={price}
             wrapperStyle={{
               width: '100%'
             }}
+            onFocus={() => {
+              input_pad_setter.current = set_price;
+              set_input_pad(true);
+            }}
+            readOnly
           ></Input>
         </p>
         <p>
           <Input
             prefixElement={<span>Amount: </span>}
-            onChange={e => set_amount(Number(e.target.value))}
+            onFocus={() => {
+              input_pad_setter.current = set_amount;
+              set_input_pad(true);
+            }}
+            readOnly
             value={amount}
           ></Input>
         </p>
@@ -117,8 +118,13 @@ const TradePanel = (prop: Props) => {
         <p>Amount: {amount}</p>
         <p>Total: {price * amount}</p>
       </DialogModal>
+      <InputPad
+        show={input_pad}
+        setter={input_pad_setter.current}
+        dismiss={() => set_input_pad(false)}
+      ></InputPad>
     </>
   );
 };
 
-export default TradePanel;
+export default React.memo(TradePanel);

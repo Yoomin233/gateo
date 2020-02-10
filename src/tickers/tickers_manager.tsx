@@ -115,8 +115,7 @@ const TickerManager = (prop: Props) => {
         <span onClick={() => toggle_sorter('ticker')}>Token</span>
         <span onClick={() => toggle_sorter('price')}>
           Price
-          <br />
-          <span onClick={() => toggle_sorter('change')}>/Change</span>
+          <span onClick={() => toggle_sorter('change')}></span>
         </span>
         <span onClick={() => toggle_sorter('usdt_amount')}>=USDT</span>
         <span>Action</span>
