@@ -11,7 +11,8 @@ import {
   get_chart,
   draw_guide,
   cal_latest_k_line,
-  process_data
+  process_data,
+  chart_data
 } from './utils';
 
 interface Props {
@@ -30,6 +31,7 @@ const KLine = (prop: Props) => {
 
   const [interval, set_interval] = React.useState<intervals>(600);
   const [loading, set_loading] = React.useState(false);
+  const [minmax, set_minmax] = React.useState([0, 0]);
 
   const chart_instance = React.useRef(null);
   const latest_price_guide_instance = React.useRef(null);
@@ -55,11 +57,13 @@ const KLine = (prop: Props) => {
   };
 
   const draw_chart = (data: KLineData[]) => {
-    chart_instance.current = get_chart(
+    const { chart, min, max } = get_chart(
       data,
       interval,
       `f2-container-${id_num.current}`
     );
+    chart_instance.current = chart;
+    set_minmax([min.range[3], max.range[2]]);
     const price = balance[ticker.ticker].price;
     latest_price_guide_instance.current = draw_guide(
       chart_instance.current,
@@ -99,7 +103,18 @@ const KLine = (prop: Props) => {
       text.repaint();
     }
     const new_data = cal_latest_k_line(k_line_datas.current, price, interval);
-    chart_instance.current.changeData(process_data(new_data, interval).source);
+    const { source, min, max } = process_data(new_data, interval);
+    // console.log(min, max);
+    chart_instance.current.changeData(source);
+    set_minmax([min.range[3], max.range[2]]);
+    // // chart_instance.current.min.position = [min.time, min.range[3]];
+    // chart_instance.current.min.content = min.range[3];
+    // // chart_instance.current.min.remove();
+    // chart_instance.current.min.repaint();
+    // // chart_instance.current.max.position = [max.time, max.range[2]];
+    // chart_instance.current.max.content = max.range[2];
+    // // chart_instance.current.max.remove();
+    // chart_instance.current.max.repaint();
   }, [balance[ticker.ticker].price]);
 
   const set_interval_func = (seconds: intervals) => () => set_interval(seconds);
@@ -111,6 +126,11 @@ const KLine = (prop: Props) => {
       }}
     >
       <p className='flexSpread'>
+        <span>
+          <span>Max: {minmax[1]}</span>
+          <br></br>
+          <span>Min: {minmax[0]}</span>
+        </span>
         <span
           className={interval === 60 ? 'selected' : ''}
           onClick={set_interval_func(60)}

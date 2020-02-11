@@ -17,6 +17,8 @@ body {
 body {
   --border-color: #eee;
   --header-color: #fff4e8;
+  --down-color: #11ec11;
+  --up-color: lightcoral;
 }
 
 .border-top {
@@ -152,10 +154,11 @@ p {
     z-index: 12;
     font-size: 90%;
     font-weight: normal;
+
     img {
       height: 1em;
       vertical-align: text-top;
-      margin:0 0.2em;
+      margin: 0 0.2em;
     }
   }
 
@@ -405,7 +408,7 @@ div.login-modal {
   .border-top();
 
   >p {
-    justify-content: space-around;
+    justify-content: space-between;
 
     >span {
       cursor: pointer;
@@ -417,6 +420,22 @@ div.login-modal {
 
       &.selected {
         border-color: #aaa;
+      }
+
+      &:first-child {
+        border: none;
+        font-size: 70%;
+        box-shadow: none;
+        text-align: left;
+        padding-left: 0;
+
+        >span:first-child {
+          color: var(--up-color);
+        }
+
+        >span:last-child {
+          color: var(--down-color);
+        }
       }
     }
   }

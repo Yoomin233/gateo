@@ -37,12 +37,13 @@ export const cal_latest_k_line = (
   return latest_data;
 };
 
+export type chart_data = {
+  range: [number, number, number, number];
+  trend: 0 | 1;
+  time: string;
+};
+
 export const process_data = (data: KLineData[], interval: intervals) => {
-  type chart_data = {
-    range: [number, number, number, number];
-    trend: 0 | 1;
-    time: string;
-  };
   const source: chart_data[] = [];
 
   /**
@@ -62,7 +63,7 @@ export const process_data = (data: KLineData[], interval: intervals) => {
 
 const get_time = (time: number) => {
   const date = new Date(time);
-  return `${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+  return `${date.getMonth()+1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
 };
 
 /**
@@ -86,21 +87,21 @@ export const get_chart = (
     animate: false
   });
 
-  chart.guide().tag({
-    position: [max.time, max.range[2]],
-    content: max.range[2],
-    offsetY: 5,
-    direct: 'bc',
-    fontSize: 10,
-  });
+  // const max_guide = chart.guide().tag({
+  //   position: [max.time, max.range[2]],
+  //   content: max.range[2],
+  //   offsetY: 5,
+  //   direct: 'bc',
+  //   fontSize: 10
+  // });
 
-  chart.guide().tag({
-    position: [min.time, min.range[3]],
-    content: min.range[3],
-    offsetY: -5,
-    direct: 'tc',
-    fontSize: 10,
-  });
+  // const min_guide = chart.guide().tag({
+  //   position: [min.time, min.range[3]],
+  //   content: min.range[3],
+  //   offsetY: -5,
+  //   direct: 'tc',
+  //   fontSize: 10
+  // });
 
   // draw_guide(chart, max[3], '#F4333C');
 
@@ -182,7 +183,7 @@ export const get_chart = (
     })
     .shape('candle');
   chart.render();
-  return chart;
+  return { chart, max, min };
 };
 
 export const draw_guide = (
@@ -195,7 +196,7 @@ export const draw_guide = (
     start: ['min', price],
     end: ['max', price],
     style: {
-      lineDash: [8],
+      // lineDash: [8],
       stroke: color
     }
   });
@@ -204,12 +205,13 @@ export const draw_guide = (
     content: `${price}`,
     style: {
       fill: color,
-      textAlign: 'start',
-      textBaseline: align,
-      fontSize: 10
+      textAlign: 'end',
+      textBaseline: 'middle',
+      fontSize: 11,
+      // fill: 'red'
       // fontWeight: 'bold'
     },
-    offsetX: 4,
+    // offsetX: -4,
     offsetY: align === 'top' ? 2 : -2
   });
   // chart.render();
