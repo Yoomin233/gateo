@@ -80,8 +80,7 @@ const Login = (prop: Props) => {
     connect();
   }, []);
 
-  const btn_disabled =
-    !!status || (is_visitor ? false : !api_key || !secret_key);
+  const btn_disabled = !!ws_status;
 
   // console.log(btn_disabled);
 
@@ -100,7 +99,7 @@ const Login = (prop: Props) => {
         okBtnProps={{
           disabled: btn_disabled
         }}
-        okText={status || `${is_visitor ? '游客' : ''}登录`}
+        okText={ws_status || `${is_visitor ? '游客' : ''}登录`}
         className='login-modal'
         noCancenBtn
       >

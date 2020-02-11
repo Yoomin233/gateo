@@ -76,27 +76,27 @@ const TickerManager = (prop: Props) => {
       // for (let i in balance) {
 
       // }
-    }, 500);
+    }, 300);
 
-    /**
-     * 订阅价格变化
-     */
-    subscribe_ws<{
-      method: string;
-      params: [string, TickerInfo];
-      id: null;
-    }>(data => {
-      if (data.method === 'ticker.update') {
-        set_balance(tickers => {
-          const incoming_name = data.params[0];
-          for (let i in tickers) {
-            if (`${i}_USDT` !== incoming_name) continue;
-            tickers[i] = set_balance_info(tickers[i], data.params[1]);
-          }
-          return { ...tickers };
-        });
-      }
-    });
+    // /**
+    //  * 订阅价格变化
+    //  */
+    // subscribe_ws<{
+    //   method: string;
+    //   params: [string, TickerInfo];
+    //   id: null;
+    // }>(data => {
+    //   if (data.method === 'ticker.update') {
+    //     set_balance(tickers => {
+    //       const incoming_name = data.params[0];
+    //       for (let i in tickers) {
+    //         if (`${i}_USDT` !== incoming_name) continue;
+    //         tickers[i] = set_balance_info(tickers[i], data.params[1]);
+    //       }
+    //       return { ...tickers };
+    //     });
+    //   }
+    // });
   }, []);
 
   const usdt_assets = tickers['USDT']

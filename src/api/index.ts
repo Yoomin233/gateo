@@ -263,4 +263,7 @@ export const http_query_k_line = (
       range_hour
     },
     'get'
-  );
+  ).then<KLineData[]>(r => {
+    if (r.result !== 'true') return [];
+    return r.data.map(line => line.map(l => Number(l)));
+  });

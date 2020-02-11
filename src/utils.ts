@@ -77,3 +77,19 @@ export const create_notification = (
   });
   notification.addEventListener('click', onclick);
 };
+
+export const get_minmax = <T = number>(
+  datas: T[],
+  get_attr_func: (arg0: T) => number = arg0 => 0,
+  is_min?: boolean
+): T => {
+  return datas.reduce((prev, next) => {
+    let prev_val = get_attr_func(prev);
+    let next_val = get_attr_func(next);
+    if (is_min) {
+      return prev_val < next_val ? prev : next;
+    } else {
+      return prev_val > next_val ? prev : next;
+    }
+  });
+};

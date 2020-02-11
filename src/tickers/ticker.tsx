@@ -11,7 +11,7 @@ import OrdersManager from './orders_manager';
 import TradeManager from './trade_manager';
 import Button from 'components/src/button';
 import KLine from './k_line';
-
+ 
 interface Props {
   ticker: TickerDetailedInfo;
   idx: number;

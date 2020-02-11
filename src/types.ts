@@ -62,13 +62,13 @@ export type OrderQueryResp = {
 };
 
 export type KLineData = [
-  string, //   time: 时间戳
-  string, //   volume: 交易量
+  number, //   time: 时间戳
+  number, //   volume: 交易量
 
-  string, //   close: 收盘价
+  number, //   close: 收盘价
 
-  string, //   high: 最高价
+  number, //   high: 最高价
 
-  string, //   low: 最低价
-  string //   open: 开盘价
+  number, //   low: 最低价
+  number //   open: 开盘价
 ];

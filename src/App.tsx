@@ -1,13 +1,14 @@
 import * as React from 'react';
 import Login from './login';
-import { Balance } from 'types';
+import { Balance, TickerInfo } from 'types';
 import {
   get_balance,
   subscribe_tickers,
   subscribe_balance,
-  subscribe_orders
+  subscribe_orders,
+  subscribe_ws
 } from 'api';
-import { aggregate_balance } from 'utils';
+import { aggregate_balance, set_balance_info } from 'utils';
 import UBLogo from 'components/src/ub-logo';
 import TickerManager, { TickerDetailedInfo } from './tickers/tickers_manager';
 import { get_mem_store, set_mem_store } from './mem_store';
@@ -37,6 +38,15 @@ export default () => {
 
   const [fetching, set_fetching] = React.useState(true);
 
+  React.useEffect(() => {
+    if (!window.Notification) return;
+    Notification.requestPermission().then(res => {
+      if (res !== 'denied') {
+        set_mem_store('allow_notification', true);
+      }
+    });
+  }, []);
+
   const finish_login_cb = async () => {
     const tickers = await update_balance();
     set_fetching(false);
@@ -54,16 +64,27 @@ export default () => {
      * 订阅价格变化
      */
     subscribe_tickers(Object.keys(tickers).map(t => `${t}_USDT`));
-  };
 
-  React.useEffect(() => {
-    if (!window.Notification) return;
-    Notification.requestPermission().then(res => {
-      if (res !== 'denied') {
-        set_mem_store('allow_notification', true);
+    /**
+     * 订阅价格变化
+     */
+    subscribe_ws<{
+      method: string;
+      params: [string, TickerInfo];
+      id: null;
+    }>(data => {
+      if (data.method === 'ticker.update') {
+        set_balance(tickers => {
+          const incoming_name = data.params[0];
+          for (let i in tickers) {
+            if (`${i}_USDT` !== incoming_name) continue;
+            tickers[i] = set_balance_info(tickers[i], data.params[1]);
+          }
+          return { ...tickers };
+        });
       }
     });
-  }, []);
+  };
 
   const update_balance = async () => {
     const data = await get_balance();
