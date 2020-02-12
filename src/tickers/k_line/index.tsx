@@ -127,9 +127,9 @@ const KLine = (prop: Props) => {
     >
       <p className='flexSpread'>
         <span>
-          <span>Max: {minmax[1]}</span>
+          <span>High: {minmax[1]}</span>
           <br></br>
-          <span>Min: {minmax[0]}</span>
+          <span>Low: {minmax[0]}</span>
         </span>
         <span
           className={interval === 60 ? 'selected' : ''}
