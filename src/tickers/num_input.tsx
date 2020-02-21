@@ -14,10 +14,9 @@ interface Props {
 const InputPad = (prop: Props) => {
   const { show, setter, dismiss, init_val } = prop;
   const [value, set_value] = React.useState('');
-  // const touched = React.useRef(false)
   const input_setter = (val: string) => () =>
     set_value(prev_val => {
-      if (val === 'C') return '0';
+      if (val === 'D') return prev_val.slice(0, -1);
       if (val === '.') {
         if (!prev_val) return '';
         if (prev_val.indexOf('.') !== -1) return prev_val;
@@ -53,7 +52,7 @@ const InputPad = (prop: Props) => {
       <Button onClick={input_setter('7')}>7</Button>
       <Button onClick={input_setter('8')}>8</Button>
       <Button onClick={input_setter('9')}>9</Button>
-      <Button onClick={input_setter('C')}>C</Button>
+      <Button onClick={input_setter('D')}>Del</Button>
       <Button onClick={input_setter('0')}>0</Button>
       <Button onClick={input_setter('.')}>.</Button>
     </DialogModal>

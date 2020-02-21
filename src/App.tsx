@@ -105,11 +105,9 @@ export default () => {
         <div className='tac mt-3'>
           <UBLogo size={30}></UBLogo>
         </div>
-      ) : null}
-      {Object.keys(balance).length ? (
+      ) : (
         <TickerManager tickers={balance}></TickerManager>
-      ) : null}
-
+      )}
       <Login finish_login_cb={finish_login_cb}></Login>
     </AppContext.Provider>
   );

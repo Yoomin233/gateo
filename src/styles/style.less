@@ -19,6 +19,7 @@ body {
   --header-color: #fff4e8;
   --down-color: #11ec11;
   --up-color: lightcoral;
+  --font-color: #5d5b6a;
 }
 
 .border-top {
@@ -35,7 +36,7 @@ body {
   -webkit-overflow-scrolling: touch;
   overflow-y: scroll;
   // padding: 1em;
-  color: #5d5b6a;
+  color: var(--font-color);
 
 }
 
@@ -47,7 +48,6 @@ body {
 p {
   margin: 0 auto;
 }
-
 
 @keyframes rise-bg {
   0% {
@@ -70,8 +70,14 @@ p {
 }
 
 .ticker-list {
+  padding-bottom: 80vh;
+
   >div {
-    border-bottom: 1px solid var(--border-color);
+
+    // border-bottom: 1px solid var(--border-color);
+    &:nth-of-type(odd)>p:first-child {
+      background: whitesmoke;
+    }
 
     &.rise>p:first-child {
       animation: rise-bg 2s linear 0s 1;
@@ -86,11 +92,7 @@ p {
       top: 2em;
       background: #fff;
       z-index: 10;
-      box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-
-      &:hover {
-        background: whitesmoke;
-      }
+      // box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 
       display: flex;
       justify-content: space-between;
@@ -98,6 +100,8 @@ p {
       text-align: right;
       padding: 0.5em;
       line-height: 0.9;
+
+
 
       .ub-button {
         padding: 0.2em;
@@ -113,9 +117,9 @@ p {
     }
   }
 
-  >* {
-    border-bottom: 1px solid var(--border-color);
-  }
+  // >* {
+  //   border-bottom: 1px solid var(--border-color);
+  // }
 
   >p,
   >div>p {
@@ -137,12 +141,11 @@ p {
     >span:not(:last-child)>span {
       font-size: 70%;
       vertical-align: bottom;
+      color: lighten(#5d5b6a, 30%);
+      font-weight: normal;
     }
-
   }
 }
-
-
 
 .ticker-header {
   background: var(--header-color);

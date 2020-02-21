@@ -73,30 +73,7 @@ const TickerManager = (prop: Props) => {
             console.log(e);
           });
       });
-      // for (let i in balance) {
-
-      // }
     }, 300);
-
-    // /**
-    //  * 订阅价格变化
-    //  */
-    // subscribe_ws<{
-    //   method: string;
-    //   params: [string, TickerInfo];
-    //   id: null;
-    // }>(data => {
-    //   if (data.method === 'ticker.update') {
-    //     set_balance(tickers => {
-    //       const incoming_name = data.params[0];
-    //       for (let i in tickers) {
-    //         if (`${i}_USDT` !== incoming_name) continue;
-    //         tickers[i] = set_balance_info(tickers[i], data.params[1]);
-    //       }
-    //       return { ...tickers };
-    //     });
-    //   }
-    // });
   }, []);
 
   const usdt_assets = tickers['USDT']
@@ -130,9 +107,7 @@ const TickerManager = (prop: Props) => {
         </span>
         <span>
           (<img src={require('./assets/cryptocurrency.png')}></img>
-          {to_percent(crypto_assets / total_assets)},
-          <img src={require('./assets/usdt.png')}></img>
-          {to_percent(usdt_assets / total_assets)})=
+          {to_percent(crypto_assets / total_assets)})
           <img src={require('./assets/usdt.png')}></img>
           {total_assets.toFixed(2)}
         </span>
