@@ -144,7 +144,7 @@ export const query_ticker = (ticker: string) =>
 
 export const query_orders = (market: string, offset = 0, limit = 50) =>
   get_mem_store('is_visitor')
-    ? promisify_datafeed(JSON.parse(fake_pending_order))
+    ? promisify_datafeed<{ result: OrderQueryResp }>(JSON.parse(fake_pending_order))
     : ws_promisify<{ result: OrderQueryResp }>('order.query', [
         market,
         offset,

@@ -11,18 +11,25 @@ import OrdersManager from './orders_manager';
 import TradeManager from './trade_manager';
 import Button from 'components/src/button';
 import KLine from './k_line';
- 
+
 interface Props {
   ticker: TickerDetailedInfo;
-  idx: number;
+  // idx: number;
+  collapse_all: boolean;
 }
 
 const Ticker = (prop: Props) => {
   // console.log('render!');
-  const { ticker } = prop;
+  const { ticker, collapse_all } = prop;
 
   const last_price = React.useRef(0);
   const [rise, set_rise] = React.useState('');
+
+  React.useEffect(() => {
+    set_expand_k_line(false);
+    set_expand_order(false);
+    set_expand_trade(false);
+  }, [collapse_all]);
 
   const [expand_order, set_expand_order] = React.useState(false);
   const [expand_trade, set_expand_trade] = React.useState(false);

@@ -72,3 +72,7 @@ export type KLineData = [
   number, //   low: 最低价
   number //   open: 开盘价
 ];
+
+export interface MyHTMLParagraphElement extends HTMLParagraphElement {
+  scrollIntoViewIfNeeded?: () => void
+}

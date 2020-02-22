@@ -19,14 +19,14 @@ interface Props {
 const OrdersManager = (prop: Props) => {
   const { ticker, expand } = prop;
 
-  const is_visitor = get_mem_store('is_visitor');
-
   const [pending_orders, set_pending_orders] = React.useState<
     PendingOrderInfo[]
   >([]);
   const [finished_orders, set_finished_orders] = React.useState<
     FinishedOrderInfo[]
   >([]);
+
+  // const middle_order_determined = React.useState(false);
 
   const ticker_full_name = `${ticker.ticker}_USDT`;
 
@@ -140,8 +140,8 @@ const OrdersManager = (prop: Props) => {
                 {pending_orders
                   .filter(o => o.type === 2)
                   .sort((oa, ob) => Number(ob.price) - Number(oa.price))
-                  .map(o => (
-                    <PendingOrder key={o.ctime} order={o}></PendingOrder>
+                  .map((o, idx) => (
+                    <PendingOrder key={o.ctime} order={o} scroll={idx == 0}></PendingOrder>
                   ))}
               </>
             ) : (
@@ -151,7 +151,7 @@ const OrdersManager = (prop: Props) => {
         </div>
         <div>
           <p className='tac f-b framed'>
-          {ticker.ticker} Latest Orders&nbsp;
+            {ticker.ticker} Latest Orders&nbsp;
             <span onClick={get_finished_orders} className='fs-1 cp'>
               Refresh
             </span>
@@ -162,8 +162,9 @@ const OrdersManager = (prop: Props) => {
               <span>Amount</span>
               <span>Total</span>
               <span>Type</span>
-              <span>Days Ago</span>
+              <span>Days</span>
               <span>Margin</span>
+              {/* <span>Reverse</span> */}
             </p>
             {!finished_orders_fetched ? (
               loading

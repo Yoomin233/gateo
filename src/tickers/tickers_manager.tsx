@@ -28,6 +28,7 @@ const TickerManager = (prop: Props) => {
   const [sorter, set_sorter] = React.useState(() => (a, b) =>
     b.usdt_amount - a.usdt_amount
   );
+  const [collapse_all, set_collapse_all] = React.useState(false);
 
   const toggle_sorter = (key: string) => {
     set_sorter(() => {
@@ -94,11 +95,23 @@ const TickerManager = (prop: Props) => {
           Price
           <span onClick={() => toggle_sorter('change')}></span>
         </span>
-        <span onClick={() => toggle_sorter('usdt_amount')}>=USDT</span>
-        <span>Action</span>
+        <span onClick={() => toggle_sorter('usdt_amount')}>USDT</span>
+        <span>
+          Action&nbsp;
+          <span
+            onClick={() => set_collapse_all(!collapse_all)}
+            className='fs-8'
+          >
+            Collapse All
+          </span>
+        </span>
       </p>
       {tickers_arr.map((b, _idx) => (
-        <Ticker key={b.ticker} ticker={balance[b.ticker]} idx={_idx}></Ticker>
+        <Ticker
+          key={b.ticker}
+          ticker={balance[b.ticker]}
+          collapse_all={collapse_all}
+        ></Ticker>
       ))}
       <p className='flexSpread ticker-header'>
         <span className={`ws-indicator ${status || 'online'}`}>
