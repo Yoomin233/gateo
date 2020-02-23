@@ -18,7 +18,7 @@ import {
   fake_pending_order,
   fake_finished_order
 } from './fake_data';
-import { TickerDetailedInfo } from 'tickers/tickers_manager';
+import { TickerDetailedInfo } from 'tickers/prices';
 
 // export let ws: WebSocket;
 const ws_subscribers: ((data: any) => void)[] = [];
@@ -119,7 +119,7 @@ const promisify_datafeed = <T>(data, timeout = 500): Promise<T> =>
 
 export const get_balance = () =>
   get_mem_store('is_visitor')
-    ? promisify_datafeed(JSON.parse(fake_balance))
+    ? promisify_datafeed<any>(JSON.parse(fake_balance))
     : ws_promisify<{ result: { [key: string]: TickerDetailedInfo } }>(
         'balance.query'
       );
@@ -133,8 +133,23 @@ export const subscribe_balance = cb => {
   });
 };
 
-export const subscribe_tickers = (ticker: string[]) =>
+export type WS_PRICE_UPDATE = { method: string; params: [string, TickerInfo]; id: null }
+
+export const subscribe_tickers = (
+  ticker: string[],
+  cb: (data: WS_PRICE_UPDATE) => void
+) => {
   ws_promisify<{ result: { status: 'success' } }>('ticker.subscribe', ticker);
+  /**
+   * 价格变化回调
+   */
+  cb &&
+    subscribe_ws<WS_PRICE_UPDATE>(data => {
+      if (data.method === 'ticker.update') {
+        cb(data);
+      }
+    });
+};
 
 export const subscribe_orders = () =>
   ws_promisify<{ result: { status: 'success' } }>('order.subscribe');
@@ -144,7 +159,9 @@ export const query_ticker = (ticker: string) =>
 
 export const query_orders = (market: string, offset = 0, limit = 50) =>
   get_mem_store('is_visitor')
-    ? promisify_datafeed<{ result: OrderQueryResp }>(JSON.parse(fake_pending_order))
+    ? promisify_datafeed<{ result: OrderQueryResp }>(
+        JSON.parse(fake_pending_order)
+      )
     : ws_promisify<{ result: OrderQueryResp }>('order.query', [
         market,
         offset,
@@ -225,7 +242,7 @@ export const http_get_finished_orders = (currencyPair: string) =>
     : http_factory<{
         trades: FinishedOrderInfo[];
       }>('/api2/1/private/tradeHistory', {
-        currencyPair,
+        currencyPair: `${currencyPair.toUpperCase()}_USDT`,
         offset: 0,
         limit: 50
       });

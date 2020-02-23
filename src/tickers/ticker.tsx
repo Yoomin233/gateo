@@ -3,9 +3,8 @@ import { Balance, FinishedOrderInfo, PendingOrderInfo } from 'types';
 import {
   subscribe_ws,
   query_orders as query_pending_orders,
-  http_get_finished_orders
 } from 'api';
-import { TickerDetailedInfo } from './tickers_manager';
+import { TickerDetailedInfo } from './prices';
 import Number from './number';
 import OrdersManager from './orders_manager';
 import TradeManager from './trade_manager';

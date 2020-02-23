@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { FinishedOrderInfo, PendingOrderInfo } from 'types';
-import FinishedOrder from './finished_order';
+import FinishedOrder from '../finished_order';
 import PendingOrder from './pending_order';
-import { TickerDetailedInfo } from './tickers_manager';
+import { TickerDetailedInfo } from './prices';
 import { query_orders, subscribe_ws, http_get_finished_orders } from 'api';
 import { AppContext } from 'App';
 import UBLogo from 'components/src/ub-logo';
@@ -26,8 +26,6 @@ const OrdersManager = (prop: Props) => {
     FinishedOrderInfo[]
   >([]);
 
-  // const middle_order_determined = React.useState(false);
-
   const ticker_full_name = `${ticker.ticker}_USDT`;
 
   const [pending_orders_fetched, set_pending_orders_fetched] = React.useState(
@@ -46,7 +44,7 @@ const OrdersManager = (prop: Props) => {
 
   const get_finished_orders = async () => {
     set_finished_orders_fetched(false);
-    const orders = await http_get_finished_orders(ticker_full_name);
+    const orders = await http_get_finished_orders(ticker.ticker);
     if (orders.code === 0) set_finished_orders(orders.trades);
     set_finished_orders_fetched(true);
   };
@@ -173,7 +171,7 @@ const OrdersManager = (prop: Props) => {
                 <FinishedOrder
                   key={o.tradeID}
                   order={o}
-                  ticker={ticker}
+                  // ticker={ticker}
                 ></FinishedOrder>
               ))
             ) : (

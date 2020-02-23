@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Balance, TickerInfo } from 'types';
 import Ticker from './ticker';
 import { subscribe_ws, query_ticker } from 'api';
-import { to_percent, set_balance_info } from 'utils';
+import { to_percent, set_balance_info, filter_valid_tokens } from 'utils';
 import { AppContext } from 'App';
 
 interface Props {
@@ -20,10 +20,10 @@ export type TickerDetailedInfo = {
   change: number;
 };
 
-const TickerManager = (prop: Props) => {
+const Prices = (prop: Props) => {
   const { tickers } = prop;
 
-  const { balance, set_balance } = React.useContext(AppContext);
+  const { balance, set_balance, selected_tab } = React.useContext(AppContext);
 
   const [sorter, set_sorter] = React.useState(() => (a, b) =>
     b.usdt_amount - a.usdt_amount
@@ -46,13 +46,7 @@ const TickerManager = (prop: Props) => {
     });
   };
 
-  const tickers_arr = Object.entries(balance)
-    .filter(([ticker, info]) => ticker !== 'USDT' && info.price !== 0)
-    .map(([ticker, value]) => ({
-      ...value,
-      ticker
-    }))
-    .sort(sorter);
+  const tickers_arr = filter_valid_tokens(balance, sorter);
 
   React.useEffect(() => {
     /**
@@ -88,7 +82,12 @@ const TickerManager = (prop: Props) => {
   const total_assets = usdt_assets + crypto_assets;
 
   return (
-    <div className='table ticker-list'>
+    <div
+      className='table ticker-list'
+      style={{
+        display: selected_tab === 'price' ? '' : 'none'
+      }}
+    >
       <p className='flexSpread ticker-header'>
         <span onClick={() => toggle_sorter('ticker')}>Token</span>
         <span onClick={() => toggle_sorter('price')}>
@@ -129,4 +128,4 @@ const TickerManager = (prop: Props) => {
   );
 };
 
-export default TickerManager;
+export default Prices;

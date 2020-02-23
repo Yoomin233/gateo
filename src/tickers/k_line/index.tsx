@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TickerDetailedInfo } from '../tickers_manager';
+import { TickerDetailedInfo } from '../prices';
 import { KLineData } from 'types';
 import { query_kline, http_query_k_line } from 'api';
 

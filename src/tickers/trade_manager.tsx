@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TickerDetailedInfo } from './tickers_manager';
+import { TickerDetailedInfo } from './prices';
 import { AppContext } from 'App';
 import { get_ticker_balance } from 'utils';
 import Input from 'components/src/input';

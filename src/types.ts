@@ -1,4 +1,4 @@
-import { TickerDetailedInfo } from 'tickers/tickers_manager';
+import { TickerDetailedInfo } from 'tickers/prices';
 
 export type User = {
   api_key: string;
@@ -10,20 +10,20 @@ export type Balance = {
 };
 
 export type TickerInfo = {
-  period: 86400;
-  open: '0.0521';
-  close: '0.0562';
-  high: '0.0576';
-  low: '0.0517';
-  last: '0.0562';
-  change: '7.86';
-  quoteVolume: '24305935.2623033324';
-  baseVolume: '1351826.11556281540896';
+  period: number;
+  open: string;
+  close: string;
+  high: string;
+  low: string;
+  last: string;
+  change: string;
+  quoteVolume: string;
+  baseVolume: string;
 };
 
 export type PendingOrderInfo = {
   id: number;
-  market: 'EOS_USDT';
+  market: string;
   user: number;
   ctime: number;
   mtime: number;
@@ -74,5 +74,5 @@ export type KLineData = [
 ];
 
 export interface MyHTMLParagraphElement extends HTMLParagraphElement {
-  scrollIntoViewIfNeeded?: () => void
+  scrollIntoViewIfNeeded?: () => void;
 }
