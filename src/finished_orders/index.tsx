@@ -53,6 +53,7 @@ const FinishedOrders = (prop: Props) => {
             display: is_selected ? '' : 'none',
             fontSize: '90%'
           }}
+          onTouchStart={e => e.stopPropagation()}
         >
           <p>
             <span>Token</span>
