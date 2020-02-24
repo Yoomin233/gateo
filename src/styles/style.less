@@ -10,10 +10,6 @@ body {
 
 }
 
-// body {
-//   font-size: 0.85em;
-// }
-
 body {
   --border-color: #eee;
   --header-color: #fff4e8;
@@ -28,6 +24,10 @@ body {
 
 .box-shadow {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.background(@color: #fff) {
+  background-color: @color;
 }
 
 .fs-8 {
@@ -124,10 +124,6 @@ p {
     }
   }
 
-  // >* {
-  //   border-bottom: 1px solid var(--border-color);
-  // }
-
   >p,
   >div>p {
 
@@ -158,20 +154,6 @@ p {
   background: var(--header-color);
   font-weight: bold;
   z-index: 2;
-
-  &:last-child {
-    position: sticky;
-    bottom: 2em;
-    z-index: 12;
-    font-size: 90%;
-    font-weight: normal;
-
-    img {
-      height: 1em;
-      vertical-align: text-top;
-      margin: 0 0.2em;
-    }
-  }
 
   &:first-child {
     position: sticky;
@@ -241,7 +223,6 @@ p {
 .ticker-details {
   align-items: flex-start;
   .border-top();
-  // background: floralwhite;
 
   >div {
     width: 50%;
@@ -289,7 +270,6 @@ p {
 }
 
 .place-order-wrapper {
-  // background: floralwhite;
   padding: 0 1em;
   .border-top();
 
@@ -297,7 +277,6 @@ p {
   button {
     width: 100%;
     height: 2.2em;
-    // color: floralwhite;
     border: none;
     color: #e6ffe6;
     font-size: 1.2em;
@@ -339,8 +318,6 @@ p {
   cursor: pointer;
   font-size: 80%;
 
-  // background: floralwhite;
-
   &:hover {
     background: darken(floralwhite, 10%);
 
@@ -357,14 +334,6 @@ input {
 }
 
 .ws-indicator {
-  // position: fixed;
-  // left: 0.8em;
-  // bottom: 2.5em;
-  // padding: 0.5em;
-  // background: whitesmoke;
-  // border-radius: 0.2em;
-  // z-index: 14;
-  // .box-shadow();
 
   &.online::before {
     background: #68e86c;
@@ -490,5 +459,41 @@ div.num-input-wrapper {
 
   >div.ub-dialog-footer {
     margin-top: 1em;
+  }
+}
+
+.orders-grouper {
+  padding: 0.5em 2em 0.5em 0.5em;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  .background();
+  justify-content: space-between;
+  display: flex;
+
+  >span {
+    position: relative;
+    &.selected::before {
+      background-color: rgba(0, 0, 0, 0.08);
+    }
+
+    &::before {
+      position: absolute;
+      content: '';
+      display: block;
+      width: 160%;
+      top: -10%;
+      height: 120%;
+      left: -30%;
+      border-radius: 0.3em;
+    }
+  }
+}
+
+.finished_orders {
+  >p:first-child {
+    .background();
+    position: sticky;
+    top: calc(2.22em + 3px);
   }
 }

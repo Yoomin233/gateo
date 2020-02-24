@@ -14,12 +14,12 @@ export const get_sign = (secret_key: string, message: string) => {
 };
 
 export const aggregate_balance = (
-  balance: { [key: string]: Balance },
+  new_balance: { [key: string]: Balance },
   old_balance: { [key: string]: TickerDetailedInfo }
 ) => {
   let res: Balance = {};
-  for (let i in balance) {
-    const current = balance[i];
+  for (let i in new_balance) {
+    const current = new_balance[i];
     const number_freeze = Number(current.freeze);
     const number_available = Number(current.available);
     if (number_freeze + number_available > 0.001) {
@@ -28,7 +28,12 @@ export const aggregate_balance = (
         available: number_available,
         ticker: i,
         price: old_balance[i] ? old_balance[i].price : 0,
-        usdt_amount: old_balance[i] ? old_balance[i].usdt_amount : 0,
+        usdt_amount:
+          i === 'USDT'
+            ? number_freeze + number_available
+            : old_balance[i]
+            ? old_balance[i].usdt_amount
+            : 0,
         change: old_balance[i] ? old_balance[i].change : 0
       };
     }
@@ -144,12 +149,40 @@ export const fetch_finished_orders = (
     }>
   >
 ) => {
-  const tokens = filter_valid_tokens(balance).map(t => t.ticker);
-  tokens.forEach(async t => {
-    const order = await http_get_finished_orders(t);
-    setter(o => {
-      o[t] = order.trades;
-      return { ...o };
+  setter({});
+  return new Promise(res => {
+    const tokens = filter_valid_tokens(balance).map(t => t.ticker);
+    let finished = 0;
+    tokens.forEach(async t => {
+      const order = await http_get_finished_orders(t);
+      setter(o => {
+        o[t] = order.trades.reduce((prev, next) => {
+          const last = prev.slice(-1)[0];
+          if (last && last.rate === next.rate) {
+            last.total += next.total;
+            last.amount = Number(last.amount) + Number(next.amount);
+            return prev;
+          }
+          return prev.concat(next);
+        }, []);
+        finished++;
+        if (finished === tokens.length) {
+          res();
+        }
+        return { ...o };
+      });
     });
   });
+};
+
+export const get_assets_sum = (balance: Balance) => {
+  let all_amount = 0;
+  let usdt_amount = 0;
+  Object.values(balance).map(b => {
+    if (b.ticker === 'USDT') {
+      usdt_amount += b.usdt_amount;
+    }
+    all_amount += b.usdt_amount;
+  });
+  return [usdt_amount, all_amount];
 };

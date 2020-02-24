@@ -112,18 +112,7 @@ const Prices = (prop: Props) => {
           collapse_all={collapse_all}
         ></Ticker>
       ))}
-      <p className='flexSpread ticker-header'>
-        <span className={`ws-indicator ${status || 'online'}`}>
-          Status:
-          {status.toUpperCase() || 'Online'}
-        </span>
-        <span>
-          (<img src={require('./assets/cryptocurrency.png')}></img>
-          {to_percent(crypto_assets / total_assets)})
-          <img src={require('./assets/usdt.png')}></img>
-          {total_assets.toFixed(2)}
-        </span>
-      </p>
+      
     </div>
   );
 };
