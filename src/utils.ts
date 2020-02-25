@@ -75,8 +75,9 @@ export const get_ticker_balance = (
   ticker: string,
   key: 'available' | 'freeze' | 'price'
 ) => {
-  return balance[ticker.toUpperCase()]
-    ? balance[ticker.toUpperCase()][key] || 0
+  let ticker_key = ticker.replace(/_usdt/i, '')
+  return balance[ticker_key.toUpperCase()]
+    ? balance[ticker_key.toUpperCase()][key] || 0
     : 0;
 };
 

@@ -23,7 +23,11 @@ const PullRefresh = (prop: React.PropsWithChildren<Props>) => {
 
   React.useEffect(() => {
     pull_area_heigh.current = ref.current.clientHeight;
-    fetch_on_init && fetch().then(() => set_fetching(false));
+    fetch_on_init &&1
+      fetch().then(() => {
+        // document.scrollingElement.scrollTop = pull_area_heigh.current;
+        set_fetching(false);
+      });
   }, []);
 
   const handle_touch_start = (e: touch_event) => {
@@ -42,6 +46,7 @@ const PullRefresh = (prop: React.PropsWithChildren<Props>) => {
   const handle_touch_end = (e: touch_event) => {
     set_pull_distance(0);
     if (distance_reached) {
+      set_distance_reached(false);
       set_fetching(true);
       fetch().then(() => {
         set_fetching(false);
@@ -51,10 +56,11 @@ const PullRefresh = (prop: React.PropsWithChildren<Props>) => {
   return (
     <div
       className='pull-refresh-wrapper'
-      onTouchStart={handle_touch_start}
-      onTouchMove={handle_touch_move}
-      onTouchEnd={handle_touch_end}
-      onScroll={e => e.stopPropagation()}
+      // onTouchStart={handle_touch_start}
+      // onTouchMove={handle_touch_move}
+      // onTouchEnd={handle_touch_end}
+      // onScroll={e => e.stopPropagation()}
+      // ref={ref}
     >
       <div
         ref={ref}

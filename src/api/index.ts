@@ -133,7 +133,11 @@ export const subscribe_balance = cb => {
   });
 };
 
-export type WS_PRICE_UPDATE = { method: string; params: [string, TickerInfo]; id: null }
+export type WS_PRICE_UPDATE = {
+  method: string;
+  params: [string, TickerInfo];
+  id: null;
+};
 
 export const subscribe_tickers = (
   ticker: string[],

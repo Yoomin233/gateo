@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { FinishedOrderInfo } from 'types';
-import { TickerDetailedInfo } from './tickers/prices';
 import { get_x_days_ago, get_ticker_balance, get_ticker } from 'utils';
 import { AppContext } from 'App';
+import Button from 'components/src/button';
+import PlaceReverseOrder from './place_reverse_order';
+import ColorNum from '../gadgets/num';
 
 interface Props {
   order: FinishedOrderInfo;
@@ -16,7 +18,7 @@ const FinishedOrder = (prop: Props) => {
 
   const { balance } = React.useContext(AppContext);
 
-  const bg_classname = order.type === 'sell' ? 'bg_red' : 'bg_green';
+  const bg_classname = order.type === 'sell' ? 'bg_green' : 'bg_red';
   const margin =
     get_ticker_balance(balance, get_ticker(order.pair), 'price') *
       Number(order.amount) -
@@ -25,29 +27,35 @@ const FinishedOrder = (prop: Props) => {
   return (
     <>
       <p className={bg_classname}>
-        <span>{get_ticker(order.pair).toUpperCase()}</span>
+        <span>
+          {order.type === 'sell' ? 'Sell' : 'Buy'}{' '}
+          {get_ticker(order.pair).toUpperCase()}
+        </span>
         <span className='f-b'>{order.rate}</span>
-        <span>{Number(order.amount).toFixed(2)}</span>
+        {/* <span>{Number(order.amount).toFixed(2)}</span> */}
         <span>{order.total.toFixed(2)}</span>
-        <span>{order.type === 'sell' ? 'Sell' : 'Buy'}</span>
+        {/* <span>{order.type === 'sell' ? 'Sell' : 'Buy'}</span> */}
         <span>{days_ago}</span>
         {order.type === 'sell' ? (
           <span></span>
         ) : (
-          <span>
-            {margin > 0 ? '↑' : margin < 0 ? '↓' : '~'}
-            {margin.toFixed(2)}
-          </span>
+          <ColorNum num={margin}></ColorNum>
+          // <span>
+          //   {margin > 0 ? '↑' : margin < 0 ? '↓' : '~'}
+          //   {margin.toFixed(2)}
+          // </span>
         )}
-        {/* <span>
-          <Button onClick={() => set_reverse_show(true)}>Reverse</Button>
-        </span> */}
+        <span>
+          <Button onClick={() => set_reverse_show(true)}>
+            {order.type === 'sell' ? 'Buy' : 'Sell'}
+          </Button>
+        </span>
       </p>
-      {/* <PlaceReverseOrder
+      <PlaceReverseOrder
         order={order}
         show={reverse_show}
         dismiss={() => set_reverse_show(false)}
-      ></PlaceReverseOrder> */}
+      ></PlaceReverseOrder>
     </>
   );
 };

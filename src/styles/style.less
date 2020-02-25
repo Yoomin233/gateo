@@ -5,7 +5,7 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 
 }
@@ -22,6 +22,10 @@ body {
   border-top: 1px solid var(--border-color);
 }
 
+.border-bottom {
+  border-bottom: 1px solid var(--border-color);
+}
+
 .box-shadow {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
@@ -30,15 +34,17 @@ body {
   background-color: @color;
 }
 
+
+
 .fs-8 {
   font-size: 80% !important;
 }
 
 #root {
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   -webkit-overflow-scrolling: touch;
-  overflow-y: scroll;
+  // overflow-y: scroll;
   // padding: 1em;
   color: var(--font-color);
 
@@ -473,6 +479,7 @@ div.num-input-wrapper {
 
   >span {
     position: relative;
+
     &.selected::before {
       background-color: rgba(0, 0, 0, 0.08);
     }
@@ -495,5 +502,20 @@ div.num-input-wrapper {
     .background();
     position: sticky;
     top: calc(2.22em + 3px);
+  }
+
+  >p {
+    // white-space: nowrap;
+    // overflow-x: scroll;
+
+    >span {
+      width: 13%;
+
+      &:not(:first-child):not(:last-child) {
+        margin: 0 0.2em;
+      }
+
+      // flex-shrink: 0;
+    }
   }
 }

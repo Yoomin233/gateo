@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { AppContext } from 'App';
 import { filter_valid_tokens, fetch_finished_orders } from 'utils';
-import Loading from '../loading';
-import FinishedOrder from '../finished_order';
+import FinishedOrder from './finished_order';
 import PullRefresh from '../pull_refresh';
 import Grouper from './grouper';
 
@@ -31,6 +30,7 @@ const FinishedOrders = (prop: Props) => {
   const [criteria, set_criteria] = React.useState<'time' | 'token'>('time');
 
   const fetch = () => fetch_finished_orders(balance, set_finished_orders);
+  // const fetch = () => Promise.resolve(console.log('fetch!'));
 
   if (!rendered) return null;
 
@@ -53,15 +53,17 @@ const FinishedOrders = (prop: Props) => {
             display: is_selected ? '' : 'none',
             fontSize: '90%'
           }}
+          onTouchStart={e => e.stopPropagation()}
         >
           <p>
             <span>Token</span>
             <span>Price</span>
-            <span>Count</span>
+            {/* <span>Count</span> */}
             <span>Total</span>
-            <span>Type</span>
+            {/* <span>Type</span> */}
             <span>Days</span>
             <span>Margin</span>
+            <span>Reverse</span>
           </p>
           {list.map(o => (
             <FinishedOrder

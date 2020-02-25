@@ -1,0 +1,22 @@
+.centered(@size: 1em) {
+  width: @size;
+  height: @size;
+  text-align: center;
+  line-height: @size;
+}
+
+.num-input {
+  >span:nth-child(2) {
+    margin: 0 0.5em;
+  }
+
+  >span:first-child,
+  >span:last-child {
+    display: inline-block;
+    border-radius: 50%;
+    background: lightgray;
+    .centered(1.2em);
+    color: #666;
+
+  }
+}

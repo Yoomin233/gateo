@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { FinishedOrderInfo, PendingOrderInfo } from 'types';
-import FinishedOrder from '../finished_order';
+import FinishedOrder from '../finished_orders/finished_order';
 import PendingOrder from './pending_order';
 import { TickerDetailedInfo } from './prices';
 import { query_orders, subscribe_ws, http_get_finished_orders } from 'api';

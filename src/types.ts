@@ -41,7 +41,7 @@ export type FinishedOrderInfo = {
   tradeID: number;
   orderNumber: number;
   pair: string;
-  type: string;
+  type: 'buy' | 'sell';
   rate: string;
   amount: string;
   total: number;
