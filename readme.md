@@ -15,12 +15,15 @@ If this option is checked, all http requests will be send to my server for trans
 
 ## screenshots
 
-![alt text](https://i.ibb.co/grVv7ww/Screen-Shot-2020-01-31-at-9-31-39-PM.jpg)
+![alt text](https://yueminhu.github.io/gateo/screenshots/fig_1.jpg)
 
-![alt text](https://i.ibb.co/3m163vC/Screen-Shot-2020-01-31-at-9-30-27-PM.jpg)
+<p style='text-align: center'>login & main page</p>
 
-### Mobile
-![alt text](https://i.ibb.co/T1jLnJG/IMG-4236-1.jpg)
+![alt text](https://yueminhu.github.io/gateo/screenshots/fig_2.jpg)
+
+<p style='text-align: center'>main page, unexecuted orders overview, finished orders overview & quick reverse order placement</p>
+
+
 
 ### local dev
 
