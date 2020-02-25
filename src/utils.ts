@@ -1,7 +1,12 @@
 import crypto from 'crypto';
-import { Balance, TickerInfo, FinishedOrderInfo } from 'types';
+import {
+  Balance,
+  TickerInfo,
+  FinishedOrderInfo,
+  PendingOrderInfo
+} from 'types';
 import { TickerDetailedInfo } from 'tickers/prices';
-import { WS_PRICE_UPDATE, http_get_finished_orders } from 'api';
+import { WS_PRICE_UPDATE, http_get_finished_orders, query_orders } from 'api';
 import { set_mem_store } from './mem_store';
 
 export const get_sign = (secret_key: string, message: string) => {
@@ -75,7 +80,7 @@ export const get_ticker_balance = (
   ticker: string,
   key: 'available' | 'freeze' | 'price'
 ) => {
-  let ticker_key = ticker.replace(/_usdt/i, '')
+  let ticker_key = ticker.replace(/_usdt/i, '');
   return balance[ticker_key.toUpperCase()]
     ? balance[ticker_key.toUpperCase()][key] || 0
     : 0;
@@ -173,6 +178,44 @@ export const fetch_finished_orders = (
         return { ...o };
       });
     });
+  });
+};
+
+export const fetch_unexecuted_orders = (
+  balance: Balance | string,
+  setter: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: PendingOrderInfo[];
+    }>
+  >
+) => {
+  // console.log(balance);
+  return new Promise(async res => {
+    if (typeof balance === 'string') {
+      return query_orders(balance).then(r =>
+        setter(o => {
+          o[get_ticker(balance).toUpperCase()] = r.result.records;
+          res();
+          // console.log(o);
+          return { ...o };
+        })
+      );
+    } else {
+      setter({});
+      const tokens = filter_valid_tokens(balance).map(t => `${t.ticker}_USDT`);
+      // .slice(0, 1);
+      let fetched = 0;
+      tokens.forEach(token => {
+        query_orders(token).then(r => {
+          fetched++;
+          setter(o => {
+            o[get_ticker(token).toUpperCase()] = r.result.records;
+            return { ...o };
+          });
+          if (fetched === tokens.length) res();
+        });
+      });
+    }
   });
 };
 

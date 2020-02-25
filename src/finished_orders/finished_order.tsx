@@ -4,7 +4,7 @@ import { get_x_days_ago, get_ticker_balance, get_ticker } from 'utils';
 import { AppContext } from 'App';
 import Button from 'components/src/button';
 import PlaceReverseOrder from './place_reverse_order';
-import ColorNum from '../gadgets/num';
+import ColorText from '../gadgets/num';
 
 interface Props {
   order: FinishedOrderInfo;
@@ -26,20 +26,23 @@ const FinishedOrder = (prop: Props) => {
   const days_ago = get_x_days_ago(order.time_unix * 1000);
   return (
     <>
-      <p className={bg_classname}>
-        <span>
-          {order.type === 'sell' ? 'Sell' : 'Buy'}{' '}
+      <p>
+        {/* <span> */}
+        <ColorText red={order.type === 'buy'}>
+          {order.type === 'sell' ? 'Sell' : 'Buy'}&nbsp;
           {get_ticker(order.pair).toUpperCase()}
-        </span>
+        </ColorText>
+
+        {/* </span> */}
         <span className='f-b'>{order.rate}</span>
         {/* <span>{Number(order.amount).toFixed(2)}</span> */}
         <span>{order.total.toFixed(2)}</span>
         {/* <span>{order.type === 'sell' ? 'Sell' : 'Buy'}</span> */}
         <span>{days_ago}</span>
         {order.type === 'sell' ? (
-          <span></span>
+          <span>-</span>
         ) : (
-          <ColorNum num={margin}></ColorNum>
+          <ColorText>{margin.toFixed(2)}</ColorText>
           // <span>
           //   {margin > 0 ? '↑' : margin < 0 ? '↓' : '~'}
           //   {margin.toFixed(2)}

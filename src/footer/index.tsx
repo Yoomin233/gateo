@@ -60,7 +60,14 @@ const Footer = (prop: Props) => {
             }
           }}
         >
-          <img src={require('../assets/trade.png')}></img>
+          <span>
+            <img src={require('../assets/trade.png')}></img>
+            {/* {selected_tab === 'finished' ? (
+              '⟲'
+            ) : (
+              <img src={require('../assets/trade.png')}></img>
+            )} */}
+          </span>
           <br />
           Finished
         </span>

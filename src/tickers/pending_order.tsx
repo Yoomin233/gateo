@@ -3,8 +3,9 @@ import { PendingOrderInfo, MyHTMLParagraphElement } from 'types';
 import Button from 'components/src/button';
 import { http_cancel_order } from 'api';
 import { AppContext } from 'App';
-import { get_ticker, to_percent } from 'utils';
+import { get_ticker, to_percent, get_ticker_balance } from 'utils';
 import Toast from 'components/src/Toast';
+import ColorText from '../gadgets/num';
 
 interface Props {
   order: PendingOrderInfo;
@@ -34,30 +35,30 @@ const PendingOrder = (prop: Props) => {
     });
   };
 
-  const bg_classname = order.type === 1 ? 'bg_red' : 'bg_green';
-  const current_price = balance[get_ticker(order.market)].price;
+  const bg_classname = order.type === 1 ? 'bg_green' : 'bg_red';
+  const current_price = get_ticker_balance(balance, order.market, 'price');
+
   const diff = Number(order.price) - current_price;
 
   return (
     <p onClick={e => e.stopPropagation()} className={bg_classname} ref={ref}>
-      <span>
+      <span style={{ width: '4%' }}>
         <Button onClick={cancel_order} loading={loading}>
-          Cancel
+          🗑
         </Button>
       </span>
-      <span className='f-b'>
-        {order.price}
-        {/* <span>
-          
-        </span> */}
-      </span>
+      <span>{get_ticker(order.market)}</span>
+
+      <ColorText affix={'%'} prefix={diff >= 0 ? '+' : ''}>
+        {((diff / current_price) * 100).toFixed(2)}
+      </ColorText>
       <span>
-        {diff > 0 ? '+' : ''}
-        {to_percent(diff / current_price)}
+        {order.price}*{order.amount}=
+        {(Number(order.price) * Number(order.amount)).toFixed(2)}
       </span>
-      <span>{order.amount}</span>
-      <span>{(Number(order.price) * Number(order.amount)).toFixed(2)}</span>
-      <span>{order.type === 1 ? 'Sell' : 'Buy'}</span>
+      <ColorText red={order.type === 2}>
+        {order.type === 1 ? 'Sell' : 'Buy'}
+      </ColorText>
     </p>
   );
 };

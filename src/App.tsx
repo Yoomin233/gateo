@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Login from './login';
-import { Balance, FinishedOrderInfo } from 'types';
+import { Balance, FinishedOrderInfo, PendingOrderInfo } from 'types';
 import {
   get_balance,
   subscribe_tickers,
@@ -18,6 +18,7 @@ import { get_mem_store } from './mem_store';
 import Footer from './footer';
 import FinishedOrders from './finished_orders';
 import Loading from './loading';
+import PendingOrders from './pending_orders';
 
 export type ws_status =
   | 'connecting'
@@ -43,6 +44,14 @@ export const AppContext = React.createContext<{
       [key: string]: FinishedOrderInfo[];
     }>
   >;
+  unexecuted_orders: {
+    [key: string]: PendingOrderInfo[];
+  };
+  set_unexecuted_orders: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: PendingOrderInfo[];
+    }>
+  >;
 }>({
   balance: {},
   set_balance: () => void 0,
@@ -51,15 +60,20 @@ export const AppContext = React.createContext<{
   selected_tab: 'price',
   set_selected_tab: () => void 0,
   finished_orders: {},
-  set_finished_orders: () => void 0
+  set_finished_orders: () => void 0,
+  unexecuted_orders: {},
+  set_unexecuted_orders: () => void 0
 });
 
 export default () => {
   const [balance, set_balance] = React.useState<Balance>({});
   const [status, set_ws_status] = React.useState<ws_status>('connecting');
   const [tab_status, set_tab_status] = React.useState<tab_status>('price');
-  const [finished_orders, set_fiished_orders] = React.useState<{
+  const [finished_orders, set_finished_orders] = React.useState<{
     [key: string]: FinishedOrderInfo[];
+  }>({});
+  const [unexecuted_orders, set_unexecuted_orders] = React.useState<{
+    [key: string]: PendingOrderInfo[];
   }>({});
 
   const [fetching, set_fetching] = React.useState(true);
@@ -105,8 +119,10 @@ export default () => {
         set_ws_status,
         selected_tab: tab_status,
         set_selected_tab: set_tab_status,
-        set_finished_orders: set_fiished_orders,
-        finished_orders
+        set_finished_orders,
+        finished_orders,
+        unexecuted_orders,
+        set_unexecuted_orders
       }}
     >
       {fetching ? (
@@ -114,6 +130,7 @@ export default () => {
       ) : (
         <>
           <Prices tickers={balance}></Prices>
+          <PendingOrders></PendingOrders>
           <FinishedOrders></FinishedOrders>
         </>
       )}

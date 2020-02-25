@@ -5,7 +5,7 @@ import DialogModal from 'components/src/modal/dialog';
 import { http_buy, http_sell } from 'api';
 import Toast from 'components/src/Toast';
 import { set_mem_store, get_mem_store } from '../mem_store';
-import InputPad from './num_input';
+import NumberInputPad from './num_input_pad';
 
 interface Props {
   ticker_price: number;
@@ -118,12 +118,12 @@ const TradePanel = (prop: Props) => {
         <p>Amount: {amount}</p>
         <p>Total: {price * amount}</p>
       </DialogModal>
-      <InputPad
+      <NumberInputPad
         show={input_pad}
         setter={input_pad_setter.current}
         dismiss={() => set_input_pad(false)}
         init_val={input_pad_setter.current === set_price ? price : amount}
-      ></InputPad>
+      ></NumberInputPad>
     </>
   );
 };

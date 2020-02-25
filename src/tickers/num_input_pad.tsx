@@ -11,7 +11,7 @@ interface Props {
   init_val?: number;
 }
 
-const InputPad = (prop: Props) => {
+const NumberInputPad = (prop: Props) => {
   const { show, setter, dismiss, init_val } = prop;
   const [value, set_value] = React.useState('');
   const input_setter = (val: string) => () =>
@@ -42,7 +42,11 @@ const InputPad = (prop: Props) => {
         }, 500);
       }}
     >
-      <Input value={value} readOnly placeholder='Please input'></Input>
+      <Input
+        value={value}
+        placeholder='Please input'
+        onChange={e => set_value(e.target.value)}
+      ></Input>
       <Button onClick={input_setter('1')}>1</Button>
       <Button onClick={input_setter('2')}>2</Button>
       <Button onClick={input_setter('3')}>3</Button>
@@ -59,4 +63,4 @@ const InputPad = (prop: Props) => {
   );
 };
 
-export default React.memo(InputPad);
+export default React.memo(NumberInputPad);

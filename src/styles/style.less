@@ -15,7 +15,8 @@ body {
   --header-color: #fff4e8;
   --down-color: #11ec11;
   --up-color: lightcoral;
-  --font-color: #5d5b6a;
+  --font-color: #45444a;
+  color: var(--font-color);
 }
 
 .border-top {
@@ -34,7 +35,13 @@ body {
   background-color: @color;
 }
 
+.bg-blue() {
+  background-image: linear-gradient(0deg, rgba(77, 149, 255, 1), rgba(57, 131, 241, 1));
+}
 
+.fs-9 {
+  font-size: 90% !important;
+}
 
 .fs-8 {
   font-size: 80% !important;
@@ -47,6 +54,7 @@ body {
   // overflow-y: scroll;
   // padding: 1em;
   color: var(--font-color);
+  background-color: lighten(#eaeaea, 5%);
 
   >.table {
     padding-bottom: 80vh;
@@ -171,20 +179,25 @@ p {
 .table {
   >p:first-child {
     font-weight: bold;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border-color);
     // background: floralwhite;
   }
 
-  >p.tac {
-    text-align: center;
-    display: block;
-  }
+  // >p.tac {
+  //   text-align: center;
+  //   display: block;
+  // }
 
   >p {
+    margin-bottom: 0.5em;
     padding: 0.5em;
     display: flex;
     justify-content: space-between;
     text-align: right;
     align-items: center;
+    background: #fff;
+    // border-bottom: 1px solid var(--border-color);
 
     >span {
       width: 20%;
@@ -206,18 +219,18 @@ p {
 .ub-button {
   font-size: inherit;
   color: inherit;
-  background: #f2f2f2;
+  // background: #fff;
   height: auto;
   padding: 0.3em 0.3em;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   border: 1px solid #c6c6c6;
+  // background-image: linear-gradient(0deg, rgba(77, 149, 255, 1), rgba(57, 131, 241, 1));
+  // color: #fff;
+  background-color: inherit;
+
 
   &::before {
     content: '';
-  }
-
-  &:hover {
-    background: darken(#f2f2f2, 10%);
   }
 
   &:disabled {
@@ -369,6 +382,15 @@ div.modal-wrapper>div {
     margin-bottom: 0.5em;
   }
 
+  .ub-button {
+    .bg-blue();
+    color: #fff;
+    padding-left: 1em;
+    padding-right: 1em;
+    border-radius: 1em;
+    border: none;
+  }
+
 
 }
 
@@ -476,32 +498,37 @@ div.num-input-wrapper {
   .background();
   justify-content: space-between;
   display: flex;
+  z-index: 3;
 
   >span {
     position: relative;
 
     &.selected::before {
-      background-color: rgba(0, 0, 0, 0.08);
+      background-color: rgba(0, 0, 0, 0.06);
     }
 
     &::before {
       position: absolute;
       content: '';
       display: block;
-      width: 160%;
+      width: 180%;
       top: -10%;
       height: 120%;
-      left: -30%;
+      left: -40%;
       border-radius: 0.3em;
     }
   }
 }
 
 .finished_orders {
+  font-size: 85%;
+  padding-bottom: 50vh;
+
   >p:first-child {
     .background();
     position: sticky;
-    top: calc(2.22em + 3px);
+    top: calc(2em + 8px);
+    z-index: 3;
   }
 
   >p {

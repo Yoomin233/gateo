@@ -35,6 +35,7 @@ export type PendingOrderInfo = {
   type: 1 | 2; // 1: Sell, 2: Buy
   filledAmount: string;
   filledTotal: string;
+  diff?: number
 };
 
 export type FinishedOrderInfo = {

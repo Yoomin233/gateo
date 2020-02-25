@@ -3,18 +3,10 @@ import { AppContext } from 'App';
 import { filter_valid_tokens, fetch_finished_orders } from 'utils';
 import FinishedOrder from './finished_order';
 import PullRefresh from '../pull_refresh';
-import Grouper from './grouper';
+import Grouper from '../gadgets/grouper';
+import RenderOnlyWhenNeeded from '../render_only_when_needed';
 
 interface Props {}
-
-const should_render = (show: boolean) => {
-  const showed = React.useRef(false);
-  if (show) {
-    showed.current = true;
-    return true;
-  }
-  return showed.current;
-};
 
 const FinishedOrders = (prop: Props) => {
   const {
@@ -25,14 +17,10 @@ const FinishedOrders = (prop: Props) => {
   } = React.useContext(AppContext);
 
   const is_selected = selected_tab === 'finished';
-  const rendered = should_render(is_selected);
 
-  const [criteria, set_criteria] = React.useState<'time' | 'token'>('time');
+  const [criteria, set_criteria] = React.useState<string>('time');
 
   const fetch = () => fetch_finished_orders(balance, set_finished_orders);
-  // const fetch = () => Promise.resolve(console.log('fetch!'));
-
-  if (!rendered) return null;
 
   const list =
     criteria === 'time'
@@ -44,36 +32,44 @@ const FinishedOrders = (prop: Props) => {
           .reduce((prev, next) => prev.concat(next));
 
   return (
-    <>
-      <Grouper on_change={set_criteria}></Grouper>
-      <PullRefresh fetch={fetch} fetch_on_init>
-        <div
-          className='table finished_orders'
-          style={{
-            display: is_selected ? '' : 'none',
-            fontSize: '90%'
-          }}
-          onTouchStart={e => e.stopPropagation()}
-        >
-          <p>
-            <span>Token</span>
-            <span>Price</span>
-            {/* <span>Count</span> */}
-            <span>Total</span>
-            {/* <span>Type</span> */}
-            <span>Days</span>
-            <span>Margin</span>
-            <span>Reverse</span>
-          </p>
-          {list.map(o => (
-            <FinishedOrder
-              key={`${o.tradeID}${o.pair}${o.time_unix}`}
-              order={o}
-            ></FinishedOrder>
-          ))}
-        </div>
-      </PullRefresh>
-    </>
+    <RenderOnlyWhenNeeded should_render={is_selected}>
+      <div
+        style={{
+          display: is_selected ? '' : 'none'
+        }}
+      >
+        <Grouper<string>
+          on_change={set_criteria}
+          criterias={['time', 'token']}
+        ></Grouper>
+        <PullRefresh fetch={fetch} fetch_on_init>
+          <div
+            className='table finished_orders'
+            style={{
+              display: is_selected ? '' : 'none'
+            }}
+            onTouchStart={e => e.stopPropagation()}
+          >
+            <p>
+              <span>Token</span>
+              <span>Price</span>
+              {/* <span>Count</span> */}
+              <span>Total</span>
+              {/* <span>Type</span> */}
+              <span>Time</span>
+              <span>Merit</span>
+              <span>Reverse</span>
+            </p>
+            {list.map(o => (
+              <FinishedOrder
+                key={`${o.tradeID}${o.pair}${o.time_unix}`}
+                order={o}
+              ></FinishedOrder>
+            ))}
+          </div>
+        </PullRefresh>
+      </div>
+    </RenderOnlyWhenNeeded>
   );
 };
 

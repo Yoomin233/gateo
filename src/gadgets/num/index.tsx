@@ -1,22 +1,31 @@
 import * as React from 'react';
 
 interface Props {
-  num: number;
   prefix?: React.ReactNode;
+  affix?: React.ReactNode
+  children: React.ReactNode;
+  red?: boolean;
 }
 
-const ColorNum = (prop: Props) => {
-  const { num, prefix } = prop;
+const ColorText = (prop: Props) => {
+  const { prefix, red = true, children, affix } = prop;
+  let color: string;
+  if (!isNaN(Number(children))) {
+    color = Number(children) >= 0 ? '#f94b4b' : '#4bd04b';
+  } else {
+    color = red ? '#f94b4b' : '#4bd04b';
+  }
   return (
     <span
       style={{
-        color: num >= 0 ? '#f94b4b' : '#4bd04b'
+        color
       }}
     >
       {prefix}
-      {num.toFixed(2)}
+      {children}
+      {affix}
     </span>
   );
 };
 
-export default ColorNum;
+export default ColorText;

@@ -139,7 +139,11 @@ const OrdersManager = (prop: Props) => {
                   .filter(o => o.type === 2)
                   .sort((oa, ob) => Number(ob.price) - Number(oa.price))
                   .map((o, idx) => (
-                    <PendingOrder key={o.ctime} order={o} scroll={idx == 0}></PendingOrder>
+                    <PendingOrder
+                      key={o.ctime}
+                      order={o}
+                      scroll={idx == 0}
+                    ></PendingOrder>
                   ))}
               </>
             ) : (
@@ -156,13 +160,12 @@ const OrdersManager = (prop: Props) => {
           </p>
           <div className='table' tabIndex={-1}>
             <p>
+              <span>Token</span>
               <span>Price</span>
-              <span>Amount</span>
               <span>Total</span>
-              <span>Type</span>
               <span>Days</span>
               <span>Margin</span>
-              {/* <span>Reverse</span> */}
+              <span>Reverse</span>
             </p>
             {!finished_orders_fetched ? (
               loading

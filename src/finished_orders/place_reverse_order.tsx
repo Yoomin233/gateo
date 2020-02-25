@@ -47,7 +47,13 @@ const PlaceReverseOrder = (prop: Props) => {
   };
 
   return (
-    <DialogModal show={show} dismiss={dismiss} onOk={handle_ok}>
+    <DialogModal
+      show={show}
+      dismiss={dismiss}
+      onOk={handle_ok}
+      destroyOnDismiss
+      className='fs-9'
+    >
       <p className='tac'>
         Place Reverse Order -{' '}
         <span style={{ color: is_buy_more ? '#f94b4b' : '#4bd04b' }}>
@@ -72,6 +78,8 @@ const PlaceReverseOrder = (prop: Props) => {
           step={10}
           on_change={set_portion}
           init_val={portion}
+          affix='%'
+          desc={((portion / 100) * Number(order.amount)).toFixed(2)}
         ></NumInput>
       </p>
       <p className='flexSpread'>
@@ -89,10 +97,11 @@ const PlaceReverseOrder = (prop: Props) => {
           on_change={set_step}
           init_val={step}
           affix={'%'}
+          desc={((step / 100) * Number(order.rate)).toFixed(2)}
         ></NumInput>
       </p>
       {datas.map(d => (
-        <p className='flexSpread'>
+        <p className='flexSpread' key={d.rise_percent}>
           <span>Amount: {d.amount.toFixed(2)}</span>
           <span>
             Price: {d.rate.toFixed(2)}({d.rise_percent}
@@ -103,7 +112,7 @@ const PlaceReverseOrder = (prop: Props) => {
       <p className='flexSpread'>
         <span>Total</span>
         <span>
-          {datas.reduce((prev, next) => prev + next.amount, 0)}(
+          {datas.reduce((prev, next) => prev + next.amount, 0).toFixed(2)}(
           {datas
             .reduce((prev, next) => prev + next.amount * next.rate, 0)
             .toFixed(2)}
