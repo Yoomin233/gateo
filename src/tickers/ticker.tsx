@@ -49,19 +49,19 @@ const Ticker = (prop: Props) => {
   return (
     <div className={`ticker-wrapper ${rise}`}>
       <p>
-        <span className='f-b'>
+        <span >
           {ticker.ticker}
           <br />
           <span>/USDT</span>
         </span>
-        <span className='f-b'>
+        <span >
           {ticker.price}
           <br />
           <Number num={ticker.change}>%</Number>
         </span>
 
         <span>{ticker.usdt_amount.toFixed(2)}</span>
-        <span className='cp f-b'>
+        <span className='cp'>
           <Button
             onClick={e => {
               set_expand_k_line(!expand_k_line);

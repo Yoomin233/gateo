@@ -80,7 +80,7 @@ const OrdersManager = (prop: Props) => {
                     noCancenBtn: true,
                     children: (
                       <>
-                        <p className='f-b tac'>
+                        <p className='tac'>
                           {ticker_full_name} Order Completed
                         </p>
                         <p>

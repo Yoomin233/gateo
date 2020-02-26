@@ -39,7 +39,7 @@ const FinishedOrder = (prop: Props) => {
           {get_ticker(order.pair).toUpperCase()}
         </ColorText> */}
 
-        <span className='f-b'>
+        <span>
           {order.rate}
           <br></br>
           <span> x {order.amount}</span>
