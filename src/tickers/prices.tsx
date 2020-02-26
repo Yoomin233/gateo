@@ -71,22 +71,14 @@ const Prices = (prop: Props) => {
     }, 300);
   }, []);
 
-  const usdt_assets = tickers['USDT']
-    ? tickers['USDT'].available + tickers['USDT'].freeze
-    : 0;
-
-  const crypto_assets = tickers_arr.reduce(
-    (prev, next) => prev + next.usdt_amount,
-    0
-  );
-  const total_assets = usdt_assets + crypto_assets;
+  if (selected_tab !== 'price') return null;
 
   return (
     <div
       className='table ticker-list'
-      style={{
-        display: selected_tab === 'price' ? '' : 'none'
-      }}
+      // style={{
+      //   display: selected_tab === 'price' ? '' : 'none'
+      // }}
     >
       <p className='flexSpread ticker-header'>
         <span onClick={() => toggle_sorter('ticker')}>Token</span>
@@ -112,7 +104,6 @@ const Prices = (prop: Props) => {
           collapse_all={collapse_all}
         ></Ticker>
       ))}
-      
     </div>
   );
 };

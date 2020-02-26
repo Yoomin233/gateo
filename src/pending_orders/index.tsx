@@ -7,7 +7,9 @@ import {
   get_ticker,
   get_ticker_balance
 } from '../utils';
-import RenderOnlyWhenNeeded from '../render_only_when_needed';
+import RenderOnlyWhenNeeded, {
+  should_render
+} from '../render_only_when_needed';
 import { subscribe_ws } from '../api';
 import { PendingOrderInfo } from 'types';
 import Grouper from '../gadgets/grouper';
@@ -27,7 +29,13 @@ const PendingOrders = (prop: Props) => {
 
   const [criteria, set_criteria] = React.useState('Diff');
 
+  const fetch = () => fetch_unexecuted_orders(balance, set_unexecuted_orders);
+
+  const rendered = should_render(is_selected);
+
   React.useEffect(() => {
+    console.log(rendered);
+    if (!rendered) return;
     const unsubscriber = subscribe_ws<{
       params: [1 | 2 | 3, PendingOrderInfo];
     }>(data => {
@@ -35,10 +43,12 @@ const PendingOrders = (prop: Props) => {
       const [, order] = data.params;
       fetch_unexecuted_orders(order.market, set_unexecuted_orders);
     });
-    return () => unsubscriber();
-  }, []);
+    fetch();
 
-  const fetch = () => fetch_unexecuted_orders(balance, set_unexecuted_orders);
+    return () => unsubscriber();
+  }, [rendered]);
+
+  if (!is_selected) return null;
 
   const list = Object.values(unexecuted_orders)
     .reduce((prev, next) => prev.concat(next), [])
@@ -52,41 +62,30 @@ const PendingOrders = (prop: Props) => {
     );
 
   return (
-    <RenderOnlyWhenNeeded should_render={is_selected}>
-      <div
-        style={{
-          display: is_selected ? '' : 'none'
-        }}
-      >
-        <Grouper
-          on_change={set_criteria}
-          criterias={['Diff', 'Time']}
-        ></Grouper>
-        <PullRefresh fetch={fetch} fetch_on_init>
-          <div className='table finished_orders'>
-            <p>
-              <span>Cancel</span>
-              <span>Token</span>
-              <span>Diff</span>
-              <span>Rate</span>
-              <span>Total</span>
-              <span>Type</span>
-            </p>
-            {list.map(o => (
-              <PendingOrder
-                key={`${o.ctime}${o.market}`}
-                order={o}
-                // scroll={
-                //   o.diff <= 0 && is_positive
-                //     ? ((is_positive = false), true)
-                //     : false
-                // }
-              ></PendingOrder>
-            ))}
-          </div>
-        </PullRefresh>
+    <div>
+      <Grouper on_change={set_criteria} criterias={['Diff', 'Time']}></Grouper>
+      <div className='table finished_orders'>
+        <p>
+          <span>Cancel</span>
+          <span>Token</span>
+          <span>Diff</span>
+          <span>Rate</span>
+          <span>Total</span>
+          <span>Type</span>
+        </p>
+        {list.map(o => (
+          <PendingOrder
+            key={`${o.ctime}${o.market}`}
+            order={o}
+            // scroll={
+            //   o.diff <= 0 && is_positive
+            //     ? ((is_positive = false), true)
+            //     : false
+            // }
+          ></PendingOrder>
+        ))}
       </div>
-    </RenderOnlyWhenNeeded>
+    </div>
   );
 };
 
