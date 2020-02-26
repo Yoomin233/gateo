@@ -86,14 +86,18 @@ export const get_ticker_balance = (
     : 0;
 };
 
-let now = Date.now();
+const hour_count = 1000 * 3600;
 const day_count = 1000 * 3600 * 24;
 
 export const get_x_days_ago = (time: number) => {
-  if (now - time < day_count) {
-    return `${Math.floor((now - time) / (1000 * 3600))} hrs`;
+  let now = Date.now();
+  if (now - time < hour_count) {
+    return '<1 hour';
   }
-  return `${Math.floor((now - time) / (1000 * 3600 * 24))} days`;
+  if (now - time < day_count) {
+    return `${Math.ceil((now - time) / (1000 * 3600))} hrs`;
+  }
+  return `${Math.ceil((now - time) / (1000 * 3600 * 24))} days`;
 };
 
 export const create_notification = (

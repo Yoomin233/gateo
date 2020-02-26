@@ -18,7 +18,6 @@ const FinishedOrder = (prop: Props) => {
 
   const { balance } = React.useContext(AppContext);
 
-  const bg_classname = order.type === 'sell' ? 'bg_green' : 'bg_red';
   const margin =
     get_ticker_balance(balance, get_ticker(order.pair), 'price') *
       Number(order.amount) -
@@ -29,24 +28,32 @@ const FinishedOrder = (prop: Props) => {
       <p>
         {/* <span> */}
         <ColorText red={order.type === 'buy'}>
+          {get_ticker(order.pair).toUpperCase()}
+          <br></br>
+          <ColorText red={order.type === 'buy'}>
+            {order.type === 'sell' ? 'Sell' : 'Buy'}
+          </ColorText>
+        </ColorText>
+        {/* <ColorText red={order.type === 'buy'}>
           {order.type === 'sell' ? 'Sell' : 'Buy'}&nbsp;
           {get_ticker(order.pair).toUpperCase()}
-        </ColorText>
+        </ColorText> */}
 
-        {/* </span> */}
-        <span className='f-b'>{order.rate}</span>
-        {/* <span>{Number(order.amount).toFixed(2)}</span> */}
-        <span>{order.total.toFixed(2)}</span>
-        {/* <span>{order.type === 'sell' ? 'Sell' : 'Buy'}</span> */}
+        <span className='f-b'>
+          {order.rate}
+          <br></br>
+          <span> x {order.amount}</span>
+        </span>
+        <span>
+          {order.total.toFixed(2)}
+          <br></br>
+          <span>USDT</span>
+        </span>
         <span>{days_ago}</span>
         {order.type === 'sell' ? (
           <span>-</span>
         ) : (
           <ColorText>{margin.toFixed(2)}</ColorText>
-          // <span>
-          //   {margin > 0 ? '↑' : margin < 0 ? '↓' : '~'}
-          //   {margin.toFixed(2)}
-          // </span>
         )}
         <span>
           <Button onClick={() => set_reverse_show(true)}>

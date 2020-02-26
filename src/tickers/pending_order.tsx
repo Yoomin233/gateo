@@ -53,8 +53,14 @@ const PendingOrder = (prop: Props) => {
         {((diff / current_price) * 100).toFixed(2)}
       </ColorText>
       <span>
-        {order.price}*{order.amount}=
+        {order.price}
+        <br></br>
+        <span> x {Number(order.amount).toFixed(2)}</span>
+      </span>
+      <span>
         {(Number(order.price) * Number(order.amount)).toFixed(2)}
+        <br></br>
+        <span>USDT</span>
       </span>
       <ColorText red={order.type === 2}>
         {order.type === 1 ? 'Sell' : 'Buy'}

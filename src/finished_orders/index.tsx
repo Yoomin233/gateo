@@ -18,12 +18,12 @@ const FinishedOrders = (prop: Props) => {
 
   const is_selected = selected_tab === 'finished';
 
-  const [criteria, set_criteria] = React.useState<string>('time');
+  const [criteria, set_criteria] = React.useState<string>('Time');
 
   const fetch = () => fetch_finished_orders(balance, set_finished_orders);
 
   const list =
-    criteria === 'time'
+    criteria === 'Time'
       ? Object.values(finished_orders)
           .reduce((p, n) => p.concat(n), [])
           .sort((oa, ob) => ob.time_unix - oa.time_unix)
@@ -40,7 +40,7 @@ const FinishedOrders = (prop: Props) => {
       >
         <Grouper<string>
           on_change={set_criteria}
-          criterias={['time', 'token']}
+          criterias={['Time', 'Token']}
         ></Grouper>
         <PullRefresh fetch={fetch} fetch_on_init>
           <div
@@ -52,7 +52,7 @@ const FinishedOrders = (prop: Props) => {
           >
             <p>
               <span>Token</span>
-              <span>Price</span>
+              <span>Rate</span>
               {/* <span>Count</span> */}
               <span>Total</span>
               {/* <span>Type</span> */}

@@ -14,6 +14,8 @@ import Grouper from '../gadgets/grouper';
 
 interface Props {}
 
+let is_positive = true;
+
 const PendingOrders = (prop: Props) => {
   const {
     selected_tab,
@@ -23,7 +25,7 @@ const PendingOrders = (prop: Props) => {
   } = React.useContext(AppContext);
   const is_selected = selected_tab === 'executed';
 
-  const [criteria, set_criteria] = React.useState('Time');
+  const [criteria, set_criteria] = React.useState('Diff');
 
   React.useEffect(() => {
     const unsubscriber = subscribe_ws<{
@@ -58,7 +60,7 @@ const PendingOrders = (prop: Props) => {
       >
         <Grouper
           on_change={set_criteria}
-          criterias={['Time', 'Diff']}
+          criterias={['Diff', 'Time']}
         ></Grouper>
         <PullRefresh fetch={fetch} fetch_on_init>
           <div className='table finished_orders'>
@@ -66,6 +68,7 @@ const PendingOrders = (prop: Props) => {
               <span>Cancel</span>
               <span>Token</span>
               <span>Diff</span>
+              <span>Rate</span>
               <span>Total</span>
               <span>Type</span>
             </p>
@@ -73,6 +76,11 @@ const PendingOrders = (prop: Props) => {
               <PendingOrder
                 key={`${o.ctime}${o.market}`}
                 order={o}
+                // scroll={
+                //   o.diff <= 0 && is_positive
+                //     ? ((is_positive = false), true)
+                //     : false
+                // }
               ></PendingOrder>
             ))}
           </div>
