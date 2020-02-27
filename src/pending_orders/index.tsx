@@ -34,18 +34,11 @@ const PendingOrders = (prop: Props) => {
   const rendered = should_render(is_selected);
 
   React.useEffect(() => {
-    console.log(rendered);
+    // console.log(rendered);
     if (!rendered) return;
-    const unsubscriber = subscribe_ws<{
-      params: [1 | 2 | 3, PendingOrderInfo];
-    }>(data => {
-      if (data.method !== 'order.update') return;
-      const [, order] = data.params;
-      fetch_unexecuted_orders(order.market, set_unexecuted_orders);
-    });
+
     fetch();
 
-    return () => unsubscriber();
   }, [rendered]);
 
   if (!is_selected) return null;
@@ -58,7 +51,9 @@ const PendingOrders = (prop: Props) => {
       return order;
     })
     .sort((b, a) =>
-      criteria === 'Time' ? a.ctime - b.ctime : a.diff - b.diff
+      criteria === 'Time'
+        ? a.ctime - b.ctime
+        : Math.abs(b.diff) - Math.abs(a.diff)
     );
 
   return (

@@ -11,6 +11,7 @@ gateio.co alternative
 You can view as a visitor(click the checkbox 'I am a visitor'), or fill in the `api key` and `api secret` to start viewing your assets & trading. Your key and secret will only be used locally. Key and secret can be generated from [this link](https://www.gateio.co/myaccount/apikeys). **Act with caution!!**
 
 ## http-proxy
+
 If this option is checked, all http requests will be send to my server for transparent proxy, to circumvent the CORS problem. If you are concerned about this, please uncheck this option at login.
 
 ## screenshots
@@ -23,7 +24,7 @@ If this option is checked, all http requests will be send to my server for trans
 
 <p style='text-align: center'>main page, unexecuted orders overview, finished orders overview & quick reverse order placement</p>
 
-
+Dark mode is available!
 
 ### local dev
 
@@ -37,3 +38,11 @@ npm run dev
 then goto `http://localhost:8080`
 
 **⚠️The author of this repository holds no responsibility to any assets lost caused by using this project. All trading-related requests are thoroughly tested but not guaranteed. Recreational and educational usage only. Miuse may lead to bankruptcy💸!**
+
+todos:
+
+[x]: optimize update_balance method(instead of fetch whole data);
+
+[x]: optimize fetch_orders method(instead of fetch whole data);
+
+[x]: add pull_to_refresh;

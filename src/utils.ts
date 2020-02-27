@@ -152,36 +152,46 @@ export const filter_valid_tokens = (
 };
 
 export const fetch_finished_orders = (
-  balance: Balance,
+  balance: Balance | string,
   setter: React.Dispatch<
     React.SetStateAction<{
       [key: string]: FinishedOrderInfo[];
     }>
   >
 ) => {
-  setter({});
   return new Promise(res => {
-    const tokens = filter_valid_tokens(balance).map(t => t.ticker);
-    let finished = 0;
-    tokens.forEach(async t => {
-      const order = await http_get_finished_orders(t);
-      setter(o => {
-        o[t] = order.trades.reduce((prev, next) => {
-          const last = prev.slice(-1)[0];
-          if (last && last.rate === next.rate) {
-            last.total += next.total;
-            last.amount = Number(last.amount) + Number(next.amount);
-            return prev;
+    if (typeof balance === 'string') {
+      const ticker = get_ticker(balance).toLocaleUpperCase();
+      http_get_finished_orders(ticker).then(r =>
+        setter(o => ({
+          ...o,
+          [ticker]: r.trades
+        }))
+      );
+    } else {
+      setter({});
+      const tokens = filter_valid_tokens(balance).map(t => t.ticker);
+      let finished = 0;
+      tokens.forEach(async t => {
+        const order = await http_get_finished_orders(t);
+        setter(o => {
+          o[t] = order.trades.reduce((prev, next) => {
+            const last = prev.slice(-1)[0];
+            if (last && last.rate === next.rate) {
+              last.total += next.total;
+              last.amount = Number(last.amount) + Number(next.amount);
+              return prev;
+            }
+            return prev.concat(next);
+          }, []);
+          finished++;
+          if (finished === tokens.length) {
+            res();
           }
-          return prev.concat(next);
-        }, []);
-        finished++;
-        if (finished === tokens.length) {
-          res();
-        }
-        return { ...o };
+          return { ...o };
+        });
       });
-    });
+    }
   });
 };
 

@@ -7,6 +7,8 @@ import Grouper from '../gadgets/grouper';
 import RenderOnlyWhenNeeded, {
   should_render
 } from '../render_only_when_needed';
+import { subscribe_ws } from 'api';
+import { PendingOrderInfo } from 'types';
 
 interface Props {}
 

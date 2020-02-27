@@ -5,12 +5,15 @@ import {
   get_balance,
   subscribe_tickers,
   subscribe_balance,
-  subscribe_orders
+  subscribe_orders,
+  subscribe_ws
 } from 'api';
 import {
   aggregate_balance,
   aggregate_price,
-  ask_notification_permit
+  ask_notification_permit,
+  fetch_finished_orders,
+  fetch_unexecuted_orders
 } from 'utils';
 import UBLogo from 'components/src/ub-logo';
 import Prices from './tickers/prices';
@@ -80,7 +83,21 @@ export default () => {
 
   React.useEffect(() => {
     ask_notification_permit();
+    const subs = add_update_orders_listener();
+    return () => subs();
   }, []);
+
+  const add_update_orders_listener = () => {
+    const unsubscriber = subscribe_ws<{
+      params: [1 | 2 | 3, PendingOrderInfo];
+    }>(data => {
+      if (data.method !== 'order.update') return;
+      const [, order] = data.params;
+      fetch_finished_orders(order.market, set_finished_orders);
+      fetch_unexecuted_orders(order.market, set_unexecuted_orders);
+    });
+    return unsubscriber;
+  };
 
   const finish_login_cb = async () => {
     const tickers = await update_balance();
