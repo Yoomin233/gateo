@@ -173,23 +173,28 @@ export const fetch_finished_orders = (
       const tokens = filter_valid_tokens(balance).map(t => t.ticker);
       let finished = 0;
       tokens.forEach(async t => {
-        const order = await http_get_finished_orders(t);
-        setter(o => {
-          o[t] = order.trades.reduce((prev, next) => {
-            const last = prev.slice(-1)[0];
-            if (last && last.rate === next.rate) {
-              last.total += next.total;
-              last.amount = Number(last.amount) + Number(next.amount);
-              return prev;
+        try {
+          const order = await http_get_finished_orders(t);
+          if (!order) return;
+          setter(o => {
+            o[t] = order.trades.reduce((prev, next) => {
+              const last = prev.slice(-1)[0];
+              if (last && last.rate === next.rate) {
+                last.total += next.total;
+                last.amount = Number(last.amount) + Number(next.amount);
+                return prev;
+              }
+              return prev.concat(next);
+            }, []);
+            finished++;
+            if (finished === tokens.length) {
+              res();
             }
-            return prev.concat(next);
-          }, []);
-          finished++;
-          if (finished === tokens.length) {
-            res();
-          }
-          return { ...o };
-        });
+            return { ...o };
+          });
+        } catch (e) {
+          console.log(e);
+        }
       });
     }
   });
