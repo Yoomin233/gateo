@@ -6,6 +6,7 @@ import { login, user_info_storage, connect_ws } from 'api';
 import { set_mem_store, get_mem_store } from './mem_store';
 import Tip from 'components/src/tip';
 import { AppContext } from 'App';
+import { local_storage } from './utils';
 
 const storage_api_key = 'api_key';
 const storage_secret_key = 'secret_key';
@@ -18,12 +19,11 @@ const Login = (prop: Props) => {
   const { finish_login_cb } = prop;
 
   const { ws_status, set_ws_status } = React.useContext(AppContext);
-
   const [api_key, set_api_key] = React.useState(
-    localStorage.getItem(storage_api_key) || ''
+    local_storage.get(storage_api_key) || ''
   );
   const [secret_key, set_secret_key] = React.useState(
-    localStorage.getItem(storage_secret_key) || ''
+    local_storage.get(storage_secret_key) || ''
   );
 
   const [remeber, set_remeber] = React.useState(true);
@@ -45,11 +45,11 @@ const Login = (prop: Props) => {
     const res = await login(api_key, secret_key);
     if (res.result.status === 'success') {
       if (remeber) {
-        localStorage.setItem(storage_api_key, api_key);
-        localStorage.setItem(storage_secret_key, secret_key);
+        local_storage.set(storage_api_key, api_key);
+        local_storage.set(storage_secret_key, secret_key);
       } else {
-        localStorage.removeItem(storage_api_key);
-        localStorage.removeItem(storage_secret_key);
+        local_storage.remove(storage_api_key);
+        local_storage.remove(storage_secret_key);
       }
       user_info_storage.api_key = api_key;
       user_info_storage.secret_key = secret_key;
@@ -78,6 +78,7 @@ const Login = (prop: Props) => {
 
   React.useEffect(() => {
     connect();
+    set_mem_store('window_width', window.innerWidth)
   }, []);
 
   const btn_disabled = !!ws_status;

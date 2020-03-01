@@ -4,6 +4,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 // production plugins...
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -60,7 +61,7 @@ module.exports = (env = {}) => {
       publicPath: publicPath
     },
     resolve: {
-      extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
       alias: { ...aliasObject, 'react-dom': '@hot-loader/react-dom' }
     },
     // always generate source-map
@@ -69,7 +70,7 @@ module.exports = (env = {}) => {
     target: 'web',
     devServer: {
       // fallback to ./src
-      contentBase: './src',
+      contentBase: ['./src', './public'],
       compress: false,
       port: devServerPort,
       headers: { 'Access-Control-Allow-Origin': '*' },
@@ -200,7 +201,13 @@ module.exports = (env = {}) => {
               filename: prodMode ? 'app.[contenthash:8].css' : '[name].css',
               chunkFilename: prodMode ? '[id].[contenthash:8].css' : '[id].css'
             }),
-            new webpack.HashedModuleIdsPlugin()
+            new webpack.HashedModuleIdsPlugin(),
+            new CopyPlugin([
+              {
+                from: path.resolve(__dirname, '../../public'),
+                to: path.resolve(__dirname, '../../output')
+              }
+            ])
           ]
         : []
     ),

@@ -69,4 +69,4 @@ const PendingOrder = (prop: Props) => {
   );
 };
 
-export default PendingOrder;
+export default React.memo(PendingOrder);

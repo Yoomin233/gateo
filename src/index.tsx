@@ -26,3 +26,4 @@ const render = Component => {
 };
 
 render(hot(App));
+

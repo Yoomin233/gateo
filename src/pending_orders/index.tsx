@@ -5,7 +5,8 @@ import PendingOrder from '../tickers/pending_order';
 import {
   fetch_unexecuted_orders,
   get_ticker,
-  get_ticker_balance
+  get_ticker_balance,
+  set_balance_info
 } from '../utils';
 import RenderOnlyWhenNeeded, {
   should_render
@@ -13,6 +14,7 @@ import RenderOnlyWhenNeeded, {
 import { subscribe_ws } from '../api';
 import { PendingOrderInfo } from 'types';
 import Grouper from '../gadgets/grouper';
+import { get_mem_store } from '../mem_store';
 
 interface Props {}
 
@@ -23,25 +25,42 @@ const PendingOrders = (prop: Props) => {
     selected_tab,
     balance,
     unexecuted_orders,
-    set_unexecuted_orders
+    set_unexecuted_orders,
+    set_balance
   } = React.useContext(AppContext);
   const is_selected = selected_tab === 'executed';
 
   const [criteria, set_criteria] = React.useState('Diff');
 
-  const fetch = () => fetch_unexecuted_orders(balance, set_unexecuted_orders);
+  const fetch = () =>
+    set_balance(balance => {
+      fetch_unexecuted_orders(balance, set_unexecuted_orders);
+      return balance;
+    });
 
-  const rendered = should_render(is_selected);
+  const rendered =
+    should_render(is_selected) || get_mem_store('window_width') > 800;
 
   React.useEffect(() => {
-    // console.log(rendered);
-    if (!rendered) return;
-
-    fetch();
-
+    if (rendered) {
+      if (get_mem_store('init_price_fetched')) {
+        console.log('ready to fetch!');
+        fetch();
+      } else {
+        const timer = setInterval(() => {
+          const ready = get_mem_store('init_price_fetched');
+          if (ready) {
+            console.log('fetch pending orders!...');
+            fetch();
+            clearInterval(timer);
+          }
+        }, 100);
+        // console.log('not ready!');
+      }
+    }
   }, [rendered]);
 
-  if (!is_selected) return null;
+  if (!is_selected && get_mem_store('window_width') < 800) return null;
 
   const list = Object.values(unexecuted_orders)
     .reduce((prev, next) => prev.concat(next), [])
@@ -68,16 +87,8 @@ const PendingOrders = (prop: Props) => {
           <span>Total</span>
           <span>Type</span>
         </p>
-        {list.map(o => (
-          <PendingOrder
-            key={`${o.ctime}${o.market}`}
-            order={o}
-            // scroll={
-            //   o.diff <= 0 && is_positive
-            //     ? ((is_positive = false), true)
-            //     : false
-            // }
-          ></PendingOrder>
+        {list.slice(0, 20).map(o => (
+          <PendingOrder key={`${o.ctime}${o.market}`} order={o}></PendingOrder>
         ))}
       </div>
     </div>

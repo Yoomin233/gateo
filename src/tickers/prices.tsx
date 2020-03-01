@@ -4,9 +4,10 @@ import Ticker from './ticker';
 import { subscribe_ws, query_ticker } from 'api';
 import { to_percent, set_balance_info, filter_valid_tokens } from 'utils';
 import { AppContext } from 'App';
+import { get_mem_store, set_mem_store } from '../mem_store';
 
 interface Props {
-  tickers: Balance;
+  // tickers: Balance;
 }
 
 let sorter_desc = true;
@@ -21,8 +22,6 @@ export type TickerDetailedInfo = {
 };
 
 const Prices = (prop: Props) => {
-  const { tickers } = prop;
-
   const { balance, set_balance, selected_tab } = React.useContext(AppContext);
 
   const [sorter, set_sorter] = React.useState(() => (a, b) =>
@@ -53,25 +52,25 @@ const Prices = (prop: Props) => {
      * 获取最初价格信息
      */
     setTimeout(() => {
-      tickers_arr.forEach(ticker => {
-        query_ticker(`${ticker.ticker}_USDT`)
-          .then(data => {
-            set_balance(t => {
-              t[ticker.ticker] = set_balance_info(
-                t[ticker.ticker],
-                data.result
-              );
-              return { ...t };
-            });
-          })
-          .catch(e => {
-            console.log(e);
-          });
+      Promise.all(
+        tickers_arr.map(({ ticker }) =>
+          query_ticker(`${ticker}_USDT`).then(data =>
+            set_balance(t => ({
+              ...t,
+              [ticker]: set_balance_info(t[ticker], data.result)
+            }))
+          )
+        )
+      ).then(r => {
+        setTimeout(() => {
+          set_mem_store('init_price_fetched', true);
+        }, 500);
       });
     }, 300);
   }, []);
 
-  if (selected_tab !== 'price') return null;
+  if (selected_tab !== 'price' && get_mem_store('window_width') < 800)
+    return null;
 
   return (
     <div

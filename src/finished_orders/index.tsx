@@ -9,6 +9,7 @@ import RenderOnlyWhenNeeded, {
 } from '../render_only_when_needed';
 import { subscribe_ws } from 'api';
 import { PendingOrderInfo } from 'types';
+import { get_mem_store } from '../mem_store';
 
 interface Props {}
 
@@ -16,6 +17,7 @@ const FinishedOrders = (prop: Props) => {
   const {
     selected_tab,
     balance,
+    set_balance,
     finished_orders,
     set_finished_orders
   } = React.useContext(AppContext);
@@ -24,16 +26,42 @@ const FinishedOrders = (prop: Props) => {
 
   const [criteria, set_criteria] = React.useState<string>('Time');
 
-  const fetch = () => fetch_finished_orders(balance, set_finished_orders);
+  const fetch = () => {
+    // console.log('fetch!');
+    set_balance(balance => {
+      fetch_finished_orders(balance, set_finished_orders);
+      return balance;
+    });
+    // return
+  };
 
-  const rendered = should_render(is_selected);
+  const rendered =
+    should_render(is_selected) || get_mem_store('window_width') > 800;
+
+  // React.useEffect(() => {
+  //   if (!rendered) return;
+  //   fetch();
+  // }, [rendered]);
 
   React.useEffect(() => {
-    if (!rendered) return;
-    fetch();
+    if (rendered) {
+      if (get_mem_store('init_price_fetched')) {
+        fetch();
+      } else {
+        const timer = setInterval(() => {
+          const ready = get_mem_store('init_price_fetched');
+          if (ready) {
+            console.log('fetch finished orders!!');
+            fetch();
+            clearInterval(timer);
+          }
+        }, 100);
+        // console.log('not ready!');
+      }
+    }
   }, [rendered]);
 
-  if (!is_selected) return null;
+  if (!is_selected && get_mem_store('window_width') < 800) return null;
 
   const list =
     criteria === 'Time'
@@ -52,9 +80,6 @@ const FinishedOrders = (prop: Props) => {
       ></Grouper>
       <div
         className='table finished_orders'
-        style={{
-          display: is_selected ? '' : 'none'
-        }}
         onTouchStart={e => e.stopPropagation()}
       >
         <p>
@@ -67,7 +92,7 @@ const FinishedOrders = (prop: Props) => {
           <span>Merit</span>
           <span>Reverse</span>
         </p>
-        {list.map(o => (
+        {list.slice(0, 20).map(o => (
           <FinishedOrder
             key={`${o.tradeID}${o.pair}${o.time_unix}`}
             order={o}

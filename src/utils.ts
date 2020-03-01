@@ -219,6 +219,7 @@ export const fetch_unexecuted_orders = (
       const tokens = filter_valid_tokens(balance).map(t => `${t.ticker}_USDT`);
       // .slice(0, 1);
       let fetched = 0;
+      // console.log(tokens);
       tokens.forEach(token => {
         query_orders(token).then(r => {
           fetched++;
@@ -243,4 +244,25 @@ export const get_assets_sum = (balance: Balance) => {
     all_amount += b.usdt_amount;
   });
   return [usdt_amount, all_amount];
+};
+
+export const get_chrome = key => {
+  return new Promise(res => chrome.storage.local.get(key, v => res(v[key])));
+};
+
+export const local_storage = {
+  get(key: string) {
+    const value = localStorage.getItem(key);
+    return value;
+  },
+  set(key: string, value: string) {
+    try {
+      return localStorage.setItem(key, value);
+    } catch (e) {
+      chrome.storage.local.set({ key: value });
+    }
+  },
+  remove(key) {
+    return localStorage && localStorage.removeItem(key);
+  }
 };

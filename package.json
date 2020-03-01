@@ -24,6 +24,7 @@
     "@antv/f2": "^3.5.0",
     "@hot-loader/react-dom": "^16.8.6",
     "axios": "^0.19.2",
+    "copy-webpack-plugin": "^5.1.1",
     "crypto": "^1.0.1",
     "react": "16.8.6",
     "react-dom": "16.8.6",
@@ -71,16 +72,5 @@
     "webpack": "^4.20.2",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.1.9"
-  },
-  "home": {
-    "development": "/",
-    "production": "./"
-  },
-  "proxy": {
-    "/api2/**": {
-      "target": "https://api.gateio.life",
-      "secure": false,
-      "changeOrigin": true
-    }
   }
 }

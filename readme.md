@@ -30,9 +30,11 @@ Dark mode is available!
 
 ```sh
 git clone --recurse-submodules https://github.com/YueminHu/gateo.git
+
 cd gateo
 npm install # or yarn, if you have it installed
 npm run dev
+# or  git clone https://github.com/YueminHu/gateo.git &&  cd gateo && gut submodule init && git submodule update
 ```
 
 then goto `http://localhost:8080`

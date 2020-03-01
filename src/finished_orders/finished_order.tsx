@@ -70,4 +70,4 @@ const FinishedOrder = (prop: Props) => {
   );
 };
 
-export default FinishedOrder;
+export default React.memo(FinishedOrder);

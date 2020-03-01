@@ -145,11 +145,11 @@ export default () => {
       {fetching ? (
         <Loading></Loading>
       ) : (
-        <>
-          <Prices tickers={balance}></Prices>
-          <PendingOrders></PendingOrders>
+        <div className='main-wrapper'>
+          <Prices></Prices>
+          <PendingOrders ></PendingOrders>
           <FinishedOrders></FinishedOrders>
-        </>
+        </div>
       )}
       <Footer></Footer>
       <Login finish_login_cb={finish_login_cb}></Login>

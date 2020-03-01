@@ -21,8 +21,8 @@ const Ticker = (prop: Props) => {
   // console.log('render!');
   const { ticker, collapse_all } = prop;
 
-  const last_price = React.useRef(0);
-  const [rise, set_rise] = React.useState('');
+  // const last_price = React.useRef(0);
+  // const [rise, set_rise] = React.useState('');
 
   React.useEffect(() => {
     set_expand_k_line(false);
@@ -34,20 +34,20 @@ const Ticker = (prop: Props) => {
   const [expand_trade, set_expand_trade] = React.useState(false);
   const [expand_k_line, set_expand_k_line] = React.useState(false);
 
-  React.useEffect(() => {
-    if (last_price.current > ticker.price && last_price.current) {
-      set_rise('fall');
-    } else if (last_price.current) {
-      set_rise('rise');
-    }
-    setTimeout(() => {
-      set_rise('');
-    }, 2500);
-    last_price.current = ticker.price;
-  }, [ticker.price]);
+  // React.useEffect(() => {
+  //   if (last_price.current > ticker.price && last_price.current) {
+  //     set_rise('fall');
+  //   } else if (last_price.current) {
+  //     set_rise('rise');
+  //   }
+  //   setTimeout(() => {
+  //     set_rise('');
+  //   }, 2500);
+  //   last_price.current = ticker.price;
+  // }, [ticker.price]);
 
   return (
-    <div className={`ticker-wrapper ${rise}`}>
+    <div className={`ticker-wrapper`}>
       <p>
         <span >
           {ticker.ticker}
