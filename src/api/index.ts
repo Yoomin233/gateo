@@ -212,7 +212,7 @@ const http_factory = <T>(
   const SIGN = get_http_sign(data, user_info_storage.secret_key);
   // console.log(get_mem_store('use_http_proxy'));
   const new_url = get_mem_store('use_http_proxy')
-    ? `${'http://www.yoomin.me'}/gate-api${url}`
+    ? `${'https://www.yoomin.me'}/gate-api${url}`
     : url;
   return Axios[`${method}`](new_url, data, {
     headers: {
