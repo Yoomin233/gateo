@@ -53,7 +53,7 @@ export const aggregate_price = (
   const incoming_name = price.params[0];
   for (let i in old_balance) {
     if (`${i}_USDT` !== incoming_name) continue;
-    old_balance[i] = set_balance_info(old_balance[i], price.params[1]);
+    old_balance[i] = set_price(old_balance[i], price.params[1]);
   }
   return { ...old_balance };
 };
@@ -63,15 +63,17 @@ export const to_percent = (num, frac = 2) =>
 
 export const get_ticker = (str: string) => str.split('_')[0];
 
-export const set_balance_info = (
+export const set_price = (
   ticker: TickerDetailedInfo,
   new_info: TickerInfo
 ): TickerDetailedInfo => {
+  // console.log(new_info);
   return {
     ...ticker,
     price: Number(new_info.last),
     usdt_amount: (ticker.freeze + ticker.available) * Number(new_info.last),
-    change: Number(new_info.change)
+    change: Number(new_info.change),
+    decimal: new_info.close.replace(/^\d+\./, '').length
   };
 };
 

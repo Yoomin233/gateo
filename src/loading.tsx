@@ -6,7 +6,7 @@ interface Props {
 }
 
 const Loading = (prop: Props) => {
-  return <div className='tac mt-3'>
+  return <div className='tac pt-3'>
   <UBLogo size={30}></UBLogo>
 </div>
 }

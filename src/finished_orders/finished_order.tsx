@@ -5,6 +5,7 @@ import { AppContext } from 'App';
 import Button from 'components/src/button';
 import PlaceReverseOrder from './place_reverse_order';
 import ColorText from '../gadgets/num';
+import { get_mem_store } from 'mem_store';
 
 interface Props {
   order: FinishedOrderInfo;
@@ -18,11 +19,13 @@ const FinishedOrder = (prop: Props) => {
 
   const { balance } = React.useContext(AppContext);
 
+  const token = get_ticker(order.pair).toUpperCase();
+
   const margin =
-    get_ticker_balance(balance, get_ticker(order.pair), 'price') *
-      Number(order.amount) -
+    get_ticker_balance(balance, token, 'price') * Number(order.amount) -
     order.total;
   const days_ago = get_x_days_ago(order.time_unix * 1000);
+  const decimal = balance[token].decimal;
   return (
     <>
       <p>
@@ -40,9 +43,9 @@ const FinishedOrder = (prop: Props) => {
         </ColorText> */}
 
         <span>
-          {order.rate}
+          {Number(order.rate).toFixed(decimal)}
           <br></br>
-          <span> x {order.amount}</span>
+          <span> x {Number(order.amount).toFixed(2)}</span>
         </span>
         <span>
           {order.total.toFixed(2)}

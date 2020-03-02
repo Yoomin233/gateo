@@ -142,17 +142,21 @@ export default () => {
         set_unexecuted_orders
       }}
     >
-      {fetching ? (
-        <Loading></Loading>
+      {get_mem_store('logged_in') ? (
+        fetching ? (
+          <Loading></Loading>
+        ) : (
+          <div className='main-wrapper'>
+            <Prices></Prices>
+            <PendingOrders></PendingOrders>
+            <FinishedOrders></FinishedOrders>
+          </div>
+        )
       ) : (
-        <div className='main-wrapper'>
-          <Prices></Prices>
-          <PendingOrders ></PendingOrders>
-          <FinishedOrders></FinishedOrders>
-        </div>
+        <Login finish_login_cb={finish_login_cb}></Login>
       )}
+      {/* {} */}
       <Footer></Footer>
-      <Login finish_login_cb={finish_login_cb}></Login>
     </AppContext.Provider>
   );
 };

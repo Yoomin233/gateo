@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Balance, TickerInfo } from 'types';
 import Ticker from './ticker';
 import { subscribe_ws, query_ticker } from 'api';
-import { to_percent, set_balance_info, filter_valid_tokens } from 'utils';
+import { to_percent, set_price, filter_valid_tokens } from 'utils';
 import { AppContext } from 'App';
 import { get_mem_store, set_mem_store } from '../mem_store';
 
@@ -19,6 +19,7 @@ export type TickerDetailedInfo = {
   price: number;
   usdt_amount: number;
   change: number;
+  decimal: number
 };
 
 const Prices = (prop: Props) => {
@@ -57,7 +58,7 @@ const Prices = (prop: Props) => {
           query_ticker(`${ticker}_USDT`).then(data =>
             set_balance(t => ({
               ...t,
-              [ticker]: set_balance_info(t[ticker], data.result)
+              [ticker]: set_price(t[ticker], data.result)
             }))
           )
         )

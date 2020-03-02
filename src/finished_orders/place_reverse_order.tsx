@@ -62,15 +62,28 @@ const PlaceReverseOrder = (prop: Props) => {
       </p>
       <p className='flexSpread'>
         <span>Order rate: </span>
-        <span>{order.rate}</span>
+        <span>
+          {order.rate}
+          <span className='fs-8'>&nbsp;USDT</span>
+        </span>
       </p>
       <p className='flexSpread'>
         <span>Order amount: </span>
         <span>{order.amount}</span>
       </p>
+      <p className='flexSpread'>
+        <span>Order total: </span>
+        <span>
+          {order.total}
+          <span className='fs-8'>&nbsp;USDT</span>
+        </span>
+      </p>
       <p className='flexSpread border-bottom pb-1'>
         <span>Current rate: </span>
-        <span>{get_ticker_balance(balance, order.pair, 'price')}</span>
+        <span>
+          {get_ticker_balance(balance, order.pair, 'price')}
+          <span className='fs-8'>&nbsp;USDT</span>
+        </span>
       </p>
       <p className='flexSpread'>
         <span>Portion:</span>
@@ -104,19 +117,22 @@ const PlaceReverseOrder = (prop: Props) => {
         <p className='flexSpread' key={d.rise_percent}>
           <span>Amount: {d.amount.toFixed(2)}</span>
           <span>
-            Price: {d.rate.toFixed(2)}({d.rise_percent}
+            Price: {d.rate.toFixed(2)}
+            <span className='fs-8'>&nbsp;USDT</span>({d.rise_percent}
             %)
           </span>
         </p>
       ))}
       <p className='flexSpread'>
-        <span>Total</span>
         <span>
-          {datas.reduce((prev, next) => prev + next.amount, 0).toFixed(2)}(
+          Total:{' '}
+          {datas.reduce((prev, next) => prev + next.amount, 0).toFixed(2)}
+        </span>
+        <span>
           {datas
             .reduce((prev, next) => prev + next.amount * next.rate, 0)
             .toFixed(2)}
-          )
+          <span className='fs-8'>&nbsp;USDT</span>
         </span>
       </p>
     </DialogModal>

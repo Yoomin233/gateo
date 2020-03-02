@@ -197,6 +197,8 @@ function get_http_sign(str: string, secret: string) {
 const is_localhost =
   location.hostname === 'localhost' || location.hostname.startsWith('192.168');
 
+const host = is_localhost ? 'https://www.yoomin.me' : 'https://www.yoomin.me';
+
 const http_factory = <T>(
   url: string,
   params: { [key: string]: any } = {},
@@ -212,7 +214,7 @@ const http_factory = <T>(
   const SIGN = get_http_sign(data, user_info_storage.secret_key);
   // console.log(get_mem_store('use_http_proxy'));
   const new_url = get_mem_store('use_http_proxy')
-    ? `${'https://www.yoomin.me'}/gate-api${url}`
+    ? `${host}/gate-api${url}`
     : url;
   return Axios[`${method}`](new_url, data, {
     headers: {

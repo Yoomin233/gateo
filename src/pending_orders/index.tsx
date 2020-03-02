@@ -6,7 +6,7 @@ import {
   fetch_unexecuted_orders,
   get_ticker,
   get_ticker_balance,
-  set_balance_info
+  set_price
 } from '../utils';
 import RenderOnlyWhenNeeded, {
   should_render
