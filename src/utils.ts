@@ -39,7 +39,8 @@ export const aggregate_balance = (
             : old_balance[i]
             ? old_balance[i].usdt_amount
             : 0,
-        change: old_balance[i] ? old_balance[i].change : 0
+        change: old_balance[i] ? old_balance[i].change : 0,
+        decimal: old_balance[i] ? old_balance[i].decimal : 0
       };
     }
   }
