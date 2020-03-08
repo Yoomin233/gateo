@@ -10,6 +10,7 @@ import RenderOnlyWhenNeeded, {
 import { subscribe_ws } from 'api';
 import { PendingOrderInfo } from 'types';
 import { get_mem_store } from '../mem_store';
+import Button from 'components/src/button';
 
 interface Props {}
 
@@ -25,23 +26,17 @@ const FinishedOrders = (prop: Props) => {
   const is_selected = selected_tab === 'finished';
 
   const [criteria, set_criteria] = React.useState<string>('Time');
+  const [revealed, set_revealed] = React.useState(20);
 
   const fetch = () => {
-    // console.log('fetch!');
     set_balance(balance => {
       fetch_finished_orders(balance, set_finished_orders);
       return balance;
     });
-    // return
   };
 
   const rendered =
     should_render(is_selected) || get_mem_store('window_width') > 800;
-
-  // React.useEffect(() => {
-  //   if (!rendered) return;
-  //   fetch();
-  // }, [rendered]);
 
   React.useEffect(() => {
     if (rendered) {
@@ -71,7 +66,6 @@ const FinishedOrders = (prop: Props) => {
       : filter_valid_tokens(balance)
           .map(t => finished_orders[t.ticker].slice(0, 20))
           .reduce((prev, next) => prev.concat(next));
-
   return (
     <div>
       <Grouper<string>
@@ -92,13 +86,18 @@ const FinishedOrders = (prop: Props) => {
           <span>Merit</span>
           <span>Reverse</span>
         </p>
-        {list.slice(0, 20).map(o => (
+        {list.slice(0, revealed).map(o => (
           <FinishedOrder
             key={`${o.tradeID}${o.pair}${o.time_unix}`}
             order={o}
           ></FinishedOrder>
         ))}
       </div>
+      {list.length && revealed < list.length ? (
+        <p className='tac mb-5 mt-3'>
+          <Button onClick={() => set_revealed(r => r + 20)}>Load More</Button>
+        </p>
+      ) : null}
     </div>
   );
 };

@@ -162,13 +162,23 @@ export const fetch_finished_orders = (
     }>
   >
 ) => {
+  const trades_reducer = (trades: FinishedOrderInfo[]) =>
+    trades.reduce((prev, next) => {
+      const last = prev.slice(-1)[0];
+      if (last && last.rate === next.rate) {
+        last.total += next.total;
+        last.amount = Number(last.amount) + Number(next.amount);
+        return prev;
+      }
+      return prev.concat(next);
+    }, []);
   return new Promise(res => {
     if (typeof balance === 'string') {
       const ticker = get_ticker(balance).toLocaleUpperCase();
       http_get_finished_orders(ticker).then(r =>
         setter(o => ({
           ...o,
-          [ticker]: r.trades
+          [ticker]: trades_reducer(r.trades)
         }))
       );
     } else {
@@ -180,15 +190,7 @@ export const fetch_finished_orders = (
           const order = await http_get_finished_orders(t);
           if (!order) return;
           setter(o => {
-            o[t] = order.trades.reduce((prev, next) => {
-              const last = prev.slice(-1)[0];
-              if (last && last.rate === next.rate) {
-                last.total += next.total;
-                last.amount = Number(last.amount) + Number(next.amount);
-                return prev;
-              }
-              return prev.concat(next);
-            }, []);
+            o[t] = trades_reducer(order.trades);
             finished++;
             if (finished === tokens.length) {
               res();

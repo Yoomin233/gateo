@@ -15,6 +15,7 @@ import { subscribe_ws } from '../api';
 import { PendingOrderInfo } from 'types';
 import Grouper from '../gadgets/grouper';
 import { get_mem_store } from '../mem_store';
+import Button from 'components/src/button';
 
 interface Props {}
 
@@ -31,6 +32,7 @@ const PendingOrders = (prop: Props) => {
   const is_selected = selected_tab === 'executed';
 
   const [criteria, set_criteria] = React.useState('Diff');
+  const [revealed, set_revealed] = React.useState(20);
 
   const fetch = () =>
     set_balance(balance => {
@@ -87,10 +89,15 @@ const PendingOrders = (prop: Props) => {
           <span>Total</span>
           <span>Type</span>
         </p>
-        {list.slice(0, 20).map(o => (
+        {list.slice(0, revealed).map(o => (
           <PendingOrder key={`${o.ctime}${o.market}`} order={o}></PendingOrder>
         ))}
       </div>
+      {list.length && revealed < list.length ? (
+        <p className='tac mb-5 mt-3'>
+          <Button onClick={() => set_revealed(r => r + 20)}>Load More</Button>
+        </p>
+      ) : null}
     </div>
   );
 };

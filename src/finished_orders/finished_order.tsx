@@ -6,30 +6,26 @@ import Button from 'components/src/button';
 import PlaceReverseOrder from './place_reverse_order';
 import ColorText from '../gadgets/num';
 import { get_mem_store } from 'mem_store';
+import { TickerDetailedInfo } from 'tickers/prices';
+import ticker from 'tickers/ticker';
 
 interface Props {
   order: FinishedOrderInfo;
-  // ticker: TickerDetailedInfo;
+  ticker: TickerDetailedInfo;
 }
 
-const FinishedOrder = (prop: Props) => {
-  const { order } = prop;
+const FinishedOrder = React.memo((prop: Props) => {
+  const { order, ticker } = prop;
 
   const [reverse_show, set_reverse_show] = React.useState(false);
 
-  const { balance } = React.useContext(AppContext);
-
-  const token = get_ticker(order.pair).toUpperCase();
-
-  const margin =
-    get_ticker_balance(balance, token, 'price') * Number(order.amount) -
-    order.total;
+  const margin = ticker.price * Number(order.amount) - order.total;
   const days_ago = get_x_days_ago(order.time_unix * 1000);
-  const decimal = balance[token].decimal;
+  const decimal = ticker.decimal;
+  // console.log('render!');
   return (
     <>
       <p>
-        {/* <span> */}
         <ColorText red={order.type === 'buy'}>
           {get_ticker(order.pair).toUpperCase()}
           <br></br>
@@ -37,10 +33,6 @@ const FinishedOrder = (prop: Props) => {
             {order.type === 'sell' ? 'Sell' : 'Buy'}
           </ColorText>
         </ColorText>
-        {/* <ColorText red={order.type === 'buy'}>
-          {order.type === 'sell' ? 'Sell' : 'Buy'}&nbsp;
-          {get_ticker(order.pair).toUpperCase()}
-        </ColorText> */}
 
         <span>
           {Number(order.rate).toFixed(decimal)}
@@ -71,6 +63,13 @@ const FinishedOrder = (prop: Props) => {
       ></PlaceReverseOrder>
     </>
   );
+});
+
+const OrderWrapper = (prop: { order: FinishedOrderInfo }) => {
+  const { order } = prop;
+  const { balance } = React.useContext(AppContext);
+  const token = get_ticker(order.pair).toUpperCase();
+  return <FinishedOrder order={order} ticker={balance[token]}></FinishedOrder>;
 };
 
-export default React.memo(FinishedOrder);
+export default OrderWrapper;
