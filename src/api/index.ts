@@ -12,7 +12,7 @@ import {
 } from 'types';
 import { get_sign } from 'utils';
 import Toast from 'components/src/Toast';
-import { set_mem_store, get_mem_store } from '../mem_store';
+import { set_mem_store, get_mem_store } from '../utils/mem_store';
 import {
   fake_balance,
   fake_pending_order,

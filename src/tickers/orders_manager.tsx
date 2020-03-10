@@ -6,7 +6,7 @@ import { TickerDetailedInfo } from './prices';
 import { query_orders, subscribe_ws, http_get_finished_orders } from 'api';
 import { AppContext } from 'App';
 import UBLogo from 'components/src/ub-logo';
-import { get_mem_store } from '../mem_store';
+import { get_mem_store } from '../utils/mem_store';
 import Button from 'components/src/button';
 import DialogModal from 'components/src/modal/dialog';
 import { create_notification } from 'utils';

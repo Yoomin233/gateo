@@ -17,7 +17,7 @@ import {
 } from 'utils';
 import UBLogo from 'components/src/ub-logo';
 import Prices from './tickers/prices';
-import { get_mem_store } from './mem_store';
+import { get_mem_store } from './utils/mem_store';
 import Footer from './footer';
 import FinishedOrders from './finished_orders';
 import Loading from './loading';

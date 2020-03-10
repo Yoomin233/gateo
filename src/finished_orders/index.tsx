@@ -9,7 +9,7 @@ import RenderOnlyWhenNeeded, {
 } from '../render_only_when_needed';
 import { subscribe_ws } from 'api';
 import { PendingOrderInfo } from 'types';
-import { get_mem_store } from '../mem_store';
+import { get_mem_store } from '../utils/mem_store';
 import Button from 'components/src/button';
 
 interface Props {}

@@ -4,7 +4,7 @@ import Ticker from './ticker';
 import { subscribe_ws, query_ticker } from 'api';
 import { to_percent, set_price, filter_valid_tokens } from 'utils';
 import { AppContext } from 'App';
-import { get_mem_store, set_mem_store } from '../mem_store';
+import { get_mem_store, set_mem_store } from '../utils/mem_store';
 
 interface Props {
   // tickers: Balance;

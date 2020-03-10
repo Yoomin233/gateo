@@ -4,7 +4,7 @@ import Button from 'components/src/button';
 import DialogModal from 'components/src/modal/dialog';
 import { http_buy, http_sell } from 'api';
 import Toast from 'components/src/Toast';
-import { set_mem_store, get_mem_store } from '../mem_store';
+import { set_mem_store, get_mem_store } from '../utils/mem_store';
 import NumberInputPad from './num_input_pad';
 
 interface Props {

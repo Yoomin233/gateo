@@ -14,7 +14,7 @@ import RenderOnlyWhenNeeded, {
 import { subscribe_ws } from '../api';
 import { PendingOrderInfo } from 'types';
 import Grouper from '../gadgets/grouper';
-import { get_mem_store } from '../mem_store';
+import { get_mem_store } from '../utils/mem_store';
 import Button from 'components/src/button';
 
 interface Props {}

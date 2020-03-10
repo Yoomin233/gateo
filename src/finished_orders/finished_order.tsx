@@ -5,7 +5,7 @@ import { AppContext } from 'App';
 import Button from 'components/src/button';
 import PlaceReverseOrder from './place_reverse_order';
 import ColorText from '../gadgets/num';
-import { get_mem_store } from 'mem_store';
+import { get_mem_store } from 'utils/mem_store';
 import { TickerDetailedInfo } from 'tickers/prices';
 import ticker from 'tickers/ticker';
 

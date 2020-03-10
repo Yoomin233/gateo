@@ -3,7 +3,7 @@ import * as React from 'react';
 import DialogModal from 'components/src/modal/dialog';
 import Input from 'components/src/input';
 import { login, user_info_storage, connect_ws } from 'api';
-import { set_mem_store, get_mem_store } from './mem_store';
+import { set_mem_store, get_mem_store } from './utils/mem_store';
 import Tip from 'components/src/tip';
 import { AppContext } from 'App';
 import { local_storage } from './utils';
