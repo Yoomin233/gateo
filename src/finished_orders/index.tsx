@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { AppContext } from 'App';
-import { filter_valid_tokens, fetch_finished_orders } from 'utils';
+import {
+  filter_valid_tokens,
+  fetch_finished_orders,
+  EventEmitter
+} from 'utils';
 import FinishedOrder from './finished_order';
 import PullRefresh from '../pull_refresh';
 import Grouper from '../gadgets/grouper';
@@ -26,11 +30,16 @@ const FinishedOrders = (prop: Props) => {
   const is_selected = selected_tab === 'finished';
 
   const [criteria, set_criteria] = React.useState<string>('Time');
-  const [revealed, set_revealed] = React.useState(20);
+  const [show_records_count, set_show_records_count] = React.useState(20);
+  const [fetch_progress, set_fetch_progress] = React.useState([0, 0]);
 
   const fetch = () => {
     set_balance(balance => {
-      fetch_finished_orders(balance, set_finished_orders);
+      set_fetch_progress([0, filter_valid_tokens(balance).length]);
+      const emitter = fetch_finished_orders(balance, set_finished_orders);
+      (emitter as EventEmitter).on((finished, total) => {
+        set_fetch_progress([finished, total]);
+      });
       return balance;
     });
   };
@@ -51,7 +60,6 @@ const FinishedOrders = (prop: Props) => {
             clearInterval(timer);
           }
         }, 100);
-        // console.log('not ready!');
       }
     }
   }, [rendered]);
@@ -66,12 +74,24 @@ const FinishedOrders = (prop: Props) => {
       : filter_valid_tokens(balance)
           .map(t => finished_orders[t.ticker].slice(0, 20))
           .reduce((prev, next) => prev.concat(next));
+  const [finished, total] = fetch_progress;
+
   return (
     <div>
       <Grouper<string>
         on_change={set_criteria}
         criterias={['Time', 'Token']}
       ></Grouper>
+      {
+        <p
+          className='finished_orders_fetch_progress tac pt-1 pb-1'
+          style={{
+            marginTop: finished !== total ? 0 : '-2em'
+          }}
+        >
+          Fetching... {finished} / {total}
+        </p>
+      }
       <div
         className='table finished_orders'
         onTouchStart={e => e.stopPropagation()}
@@ -86,16 +106,18 @@ const FinishedOrders = (prop: Props) => {
           <span>Merit</span>
           <span>Reverse</span>
         </p>
-        {list.slice(0, revealed).map(o => (
+        {list.slice(0, show_records_count).map(o => (
           <FinishedOrder
             key={`${o.tradeID}${o.pair}${o.time_unix}`}
             order={o}
           ></FinishedOrder>
         ))}
       </div>
-      {list.length && revealed < list.length ? (
+      {list.length && show_records_count < list.length ? (
         <p className='tac mb-5 mt-3'>
-          <Button onClick={() => set_revealed(r => r + 20)}>Load More</Button>
+          <Button onClick={() => set_show_records_count(r => r + 20)}>
+            Load More
+          </Button>
         </p>
       ) : null}
     </div>

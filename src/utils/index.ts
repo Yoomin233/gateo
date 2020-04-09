@@ -172,38 +172,44 @@ export const fetch_finished_orders = (
       }
       return prev.concat(next);
     }, []);
-  return new Promise(res => {
-    if (typeof balance === 'string') {
-      const ticker = get_ticker(balance).toLocaleUpperCase();
-      http_get_finished_orders(ticker).then(r =>
-        setter(o => ({
-          ...o,
-          [ticker]: trades_reducer(r.trades)
-        }))
-      );
-    } else {
-      setter({});
-      const tokens = filter_valid_tokens(balance).map(t => t.ticker);
-      let finished = 0;
-      tokens.forEach(async t => {
-        try {
-          const order = await http_get_finished_orders(t);
-          if (!order) return;
-          setter(o => {
-            o[t] = trades_reducer(order.trades);
-            finished++;
-            if (finished === tokens.length) {
-              res();
-            }
-            return { ...o };
-          });
-        } catch (e) {
-          console.log(e);
-        }
+  if (typeof balance === 'string') {
+    const ticker = get_ticker(balance).toLocaleUpperCase();
+    return http_get_finished_orders(ticker).then(r =>
+      setter(o => ({
+        ...o,
+        [ticker]: trades_reducer(r.trades)
+      }))
+    );
+  } else {
+    setter({});
+    const tokens = filter_valid_tokens(balance).map(t => t.ticker);
+    let finished = 0;
+    const total = tokens.length
+    const emitter = new EventEmitter()
+    tokens.forEach(t => {
+      http_get_finished_orders(t).then(order => {
+        if (!order) return;
+        setter(o => {
+          o[t] = trades_reducer(order.trades);
+          emitter.emit(++finished, total)
+          return { ...o };
+        });
       });
-    }
-  });
+      
+    });
+    return emitter
+  }
 };
+
+export class EventEmitter {
+  callbacks = [];
+  on(callback: (...params: any[]) => any) {
+    this.callbacks.push(callback);
+  }
+  emit(...params: any[]) {
+    this.callbacks.forEach(c => c(...params));
+  }
+}
 
 export const fetch_unexecuted_orders = (
   balance: Balance | string,
@@ -256,9 +262,9 @@ export const get_assets_sum = (balance: Balance) => {
   return [usdt_amount, all_amount];
 };
 
-export const get_chrome = key => {
-  return new Promise(res => chrome.storage.local.get(key, v => res(v[key])));
-};
+// export const get_chrome = key => {
+//   return new Promise(res => chrome.storage.local.get(key, v => res(v[key])));
+// };
 
 export const local_storage = {
   get(key: string) {

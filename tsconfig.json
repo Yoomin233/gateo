@@ -17,7 +17,10 @@
       "components/*": ["components/*"],
       "utils": ["utils"],
       "App": ["App"]
-    }
+    },
+    "types": [
+      "node"
+    ]
   },
   "include": ["./src/**/*"],
   "typeRoots": ["./src/@types", "./node_modules/@types"]

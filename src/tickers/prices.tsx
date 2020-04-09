@@ -70,15 +70,15 @@ const Prices = (prop: Props) => {
     }, 300);
   }, []);
 
-  if (selected_tab !== 'price' && get_mem_store('window_width') < 800)
-    return null;
+  // if (selected_tab !== 'price' && get_mem_store('window_width') < 800)
+  //   return null;
 
   return (
     <div
       className='table ticker-list'
-      // style={{
-      //   display: selected_tab === 'price' ? '' : 'none'
-      // }}
+      style={{
+        display: selected_tab === 'price' || get_mem_store('window_width') > 800? '' : 'none'
+      }}
     >
       <p className='flexSpread ticker-header'>
         <span onClick={() => toggle_sorter('ticker')}>Token</span>
